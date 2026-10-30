@@ -106,6 +106,19 @@ export interface AuditEntry {
 
 export interface AssistantStore {
   getBusiness(businessId: string): Promise<BusinessRecord | null>;
+  getBusinessBySlug(slug: string): Promise<BusinessRecord | null>;
+  /** Crée ou retrouve un client par téléphone (non vérifié à ce stade). */
+  upsertCustomerByPhone(
+    businessId: string,
+    input: { name: string | null; phone: string },
+  ): Promise<{ id: string }>;
+  setSessionCustomer(sessionId: string, customerId: string): Promise<void>;
+  updateOrderCustomerAndPayment(
+    businessId: string,
+    orderId: string,
+    customerId: string | null,
+    paymentMethod: string,
+  ): Promise<void>;
   getBusinessInfo(businessId: string): Promise<BusinessInfoRecord | null>;
   listDeliveryZones(businessId: string): Promise<DeliveryZoneRecord[]>;
   listMenuItems(businessId: string): Promise<MenuItemRecord[]>;

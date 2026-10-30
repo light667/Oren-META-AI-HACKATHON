@@ -45,6 +45,65 @@ export class SupabaseAssistantStore implements AssistantStore {
     };
   }
 
+  async getBusinessBySlug(slug: string): Promise<BusinessRecord | null> {
+    const { data } = await this.db
+      .from("businesses")
+      .select("id, name, slug, business_type, enabled_capabilities, config")
+      .eq("slug", slug)
+      .maybeSingle();
+    if (!data) return null;
+    return {
+      id: data.id,
+      name: data.name,
+      slug: data.slug,
+      businessType: data.business_type,
+      enabledCapabilities: data.enabled_capabilities ?? [],
+      config: data.config ?? {},
+    };
+  }
+
+  async upsertCustomerByPhone(
+    businessId: string,
+    input: { name: string | null; phone: string },
+  ): Promise<{ id: string }> {
+    const { data: existing } = await this.db
+      .from("customers")
+      .select("id")
+      .eq("business_id", businessId)
+      .eq("phone", input.phone)
+      .maybeSingle();
+    if (existing) {
+      if (input.name) {
+        await this.db.from("customers").update({ name: input.name }).eq("id", existing.id);
+      }
+      return { id: existing.id as string };
+    }
+    const { data, error } = await this.db
+      .from("customers")
+      .insert({ business_id: businessId, name: input.name, phone: input.phone })
+      .select("id")
+      .single();
+    if (error || !data) throw new Error("Impossible d'enregistrer le client.");
+    return { id: data.id as string };
+  }
+
+  async setSessionCustomer(sessionId: string, customerId: string): Promise<void> {
+    await this.db.from("sessions").update({ customer_id: customerId }).eq("id", sessionId);
+  }
+
+  async updateOrderCustomerAndPayment(
+    businessId: string,
+    orderId: string,
+    customerId: string | null,
+    paymentMethod: string,
+  ): Promise<void> {
+    await this.db
+      .from("orders")
+      .update({ customer_id: customerId, payment_method: paymentMethod })
+      .eq("business_id", businessId)
+      .eq("id", orderId);
+  }
+
   async getBusinessInfo(businessId: string): Promise<BusinessInfoRecord | null> {
     const { data } = await this.db
       .from("business_info")

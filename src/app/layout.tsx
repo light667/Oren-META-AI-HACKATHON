@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { fr } from "@/i18n/fr";
 import "./globals.css";
@@ -11,6 +11,14 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: fr.app.title,
   description: fr.app.description,
+  appleWebApp: { capable: true, title: fr.app.title },
+  icons: { apple: "/icons/apple-touch-icon.png" },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0a0a0a",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({

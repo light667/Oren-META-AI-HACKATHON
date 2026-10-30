@@ -9,7 +9,7 @@ values (
   'Chez Chef T',
   'chez-chef-t',
   'restaurant',
-  '{"city": "Lomé", "country": "TG", "currency": "FCFA"}'::jsonb,
+  '{"city": "Lomé", "country": "TG", "currency": "FCFA", "phone": "+228 90 00 00 00"}'::jsonb,
   array['catalog_orders']
 )
 on conflict (id) do nothing;

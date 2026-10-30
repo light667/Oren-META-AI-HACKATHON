@@ -26,11 +26,42 @@ function preparedToken(store: FakeStore): string {
 
 describe("accord explicite", () => {
   it("reconnaît les formules positives et refuse le reste", () => {
-    for (const yes of ["oui", "Oui !", "d'accord", "Je confirme", "ok, vas-y", "C'est bon"]) {
+    for (const yes of ["oui", "Oui !", "d'accord", "Je confirme", "C'est bon"]) {
       expect(isExplicitAgreement(yes), yes).toBe(true);
     }
     for (const no of ["non", "pas d'accord", "peut-être", "je réfléchis", "annule tout", ""]) {
       expect(isExplicitAgreement(no), no).toBe(false);
+    }
+  });
+
+  it("liste demandée : 7 accords acceptés, questions et modifications refusées", () => {
+    // Formules acceptées comme accord explicite (casse et accents libres).
+    for (const yes of [
+      "oui",
+      "ok",
+      "d'accord",
+      "c'est bon",
+      "je valide",
+      "vas-y",
+      "je confirme",
+      "Oui, je confirme.",
+      "D'ACCORD",
+      "c'est bon, merci",
+    ]) {
+      expect(isExplicitAgreement(yes), `« ${yes} » devrait être un accord`).toBe(true);
+    }
+    // Une question ou une modification n'est jamais un accord au récapitulatif.
+    for (const no of [
+      "oui mais…",
+      "oui mais enlève le jus",
+      "et la boisson ?",
+      "oui, et la boisson ?",
+      "d'accord mais change le plat",
+      "je valide ?",
+      "ok, ajoute un jus",
+      "vas-y mais sans piment",
+    ]) {
+      expect(isExplicitAgreement(no), `« ${no} » ne devrait pas être un accord`).toBe(false);
     }
   });
 });

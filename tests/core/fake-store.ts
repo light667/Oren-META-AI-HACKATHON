@@ -66,8 +66,50 @@ export class FakeStore implements AssistantStore {
     ]);
   }
 
+  customers = new Map<string, { id: string; businessId: string; name: string | null; phone: string; phoneVerifiedAt: string | null }>();
+
   async getBusiness(businessId: string) {
     return this.businesses.get(businessId) ?? null;
+  }
+  async getBusinessBySlug(slug: string) {
+    return [...this.businesses.values()].find((b) => b.slug === slug) ?? null;
+  }
+  async upsertCustomerByPhone(
+    businessId: string,
+    input: { name: string | null; phone: string },
+  ): Promise<{ id: string }> {
+    const key = `${businessId}:${input.phone}`;
+    const existing = this.customers.get(key);
+    if (existing) {
+      if (input.name) existing.name = input.name;
+      return { id: existing.id };
+    }
+    const customer = {
+      id: this.id("customer"),
+      businessId,
+      name: input.name,
+      phone: input.phone,
+      phoneVerifiedAt: null as string | null,
+    };
+    this.customers.set(key, customer);
+    return { id: customer.id };
+  }
+  async setSessionCustomer(sessionId: string, customerId: string): Promise<void> {
+    for (const session of this.sessions.values()) {
+      if (session.id === sessionId) session.customerId = customerId;
+    }
+  }
+  async updateOrderCustomerAndPayment(
+    businessId: string,
+    orderId: string,
+    customerId: string | null,
+    paymentMethod: string,
+  ): Promise<void> {
+    const order = this.orders.get(orderId);
+    if (order && order.businessId === businessId) {
+      order.paymentMethod = paymentMethod;
+      (order as { customerId?: string | null }).customerId = customerId;
+    }
   }
   async getBusinessInfo(businessId: string) {
     return this.infos.get(businessId) ?? null;

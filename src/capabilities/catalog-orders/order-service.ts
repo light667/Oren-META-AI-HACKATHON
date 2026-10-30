@@ -184,6 +184,35 @@ export async function confirmOrder(
   business: BusinessRecord,
   input: { token?: string | null; conversationId: string; sessionId: string },
 ): Promise<Record<string, unknown>> {
+  return confirmWithToken(store, business, { ...input, requireAgreement: true });
+}
+
+/**
+ * Confirmation par action structurée (bouton « Je confirme ») : le clic
+ * sur le récapitulatif exact, avec le jeton, EST l'accord explicite.
+ * On ne passe donc pas par l'interprétation du texte, mais toutes les
+ * autres vérifications restent identiques : jeton valide, lié à cette
+ * session et cette conversation, non utilisé, non expiré,
+ * récapitulatif inchangé, commande en attente.
+ */
+export async function confirmStructuredOrder(
+  store: AssistantStore,
+  business: BusinessRecord,
+  input: { token?: string | null; conversationId: string; sessionId: string },
+): Promise<Record<string, unknown>> {
+  return confirmWithToken(store, business, { ...input, requireAgreement: false });
+}
+
+async function confirmWithToken(
+  store: AssistantStore,
+  business: BusinessRecord,
+  input: {
+    token?: string | null;
+    conversationId: string;
+    sessionId: string;
+    requireAgreement: boolean;
+  },
+): Promise<Record<string, unknown>> {
   let tokenHash: string | null = null;
   if (input.token?.trim()) {
     tokenHash = hashToken(input.token.trim());
@@ -206,17 +235,19 @@ export async function confirmOrder(
     throw new ToolRefusal(fr.assistant.errors.tokenInvalid);
   }
 
-  const lastCustomer = await store.getLastCustomerMessage(input.conversationId);
-  if (!lastCustomer || !isExplicitAgreement(lastCustomer.content)) {
-    throw new ToolRefusal(fr.assistant.errors.noAgreement);
-  }
-  // L'accord doit suivre l'émission du jeton : un « oui » donné avant
-  // d'avoir vu le récapitulatif ne confirme pas ce récapitulatif.
-  // new Date(...) accepte une chaîne ISO comme un objet Date (PGlite).
-  const agreementAt = new Date(lastCustomer.createdAt).getTime();
-  const tokenAt = new Date(token.createdAt).getTime();
-  if (!Number.isFinite(agreementAt) || !Number.isFinite(tokenAt) || agreementAt <= tokenAt) {
-    throw new ToolRefusal(fr.assistant.errors.noAgreement);
+  if (input.requireAgreement) {
+    const lastCustomer = await store.getLastCustomerMessage(input.conversationId);
+    if (!lastCustomer || !isExplicitAgreement(lastCustomer.content)) {
+      throw new ToolRefusal(fr.assistant.errors.noAgreement);
+    }
+    // L'accord doit suivre l'émission du jeton : un « oui » donné avant
+    // d'avoir vu le récapitulatif ne confirme pas ce récapitulatif.
+    // new Date(...) accepte une chaîne ISO comme un objet Date (PGlite).
+    const agreementAt = new Date(lastCustomer.createdAt).getTime();
+    const tokenAt = new Date(token.createdAt).getTime();
+    if (!Number.isFinite(agreementAt) || !Number.isFinite(tokenAt) || agreementAt <= tokenAt) {
+      throw new ToolRefusal(fr.assistant.errors.noAgreement);
+    }
   }
 
   if (order.status !== "pending") {

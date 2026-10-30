@@ -1,4 +1,5 @@
 import { BusinessManager, type BusinessInfoData, type ZoneData } from "@/components/business-manager";
+import { BusinessQr } from "@/components/business-qr";
 import { getStaffContext } from "@/lib/server-context";
 import { createClient } from "@/lib/supabase/server";
 
@@ -20,10 +21,13 @@ export default async function BusinessPage() {
   ]);
 
   return (
-    <BusinessManager
-      info={(info as BusinessInfoData | null) ?? null}
-      zones={(zones as ZoneData[] | null) ?? []}
-      canEdit={ctx?.role === "owner"}
-    />
+    <div className="space-y-6">
+      <BusinessManager
+        info={(info as BusinessInfoData | null) ?? null}
+        zones={(zones as ZoneData[] | null) ?? []}
+        canEdit={ctx?.role === "owner"}
+      />
+      {ctx && <BusinessQr slug={ctx.business.slug} businessName={ctx.business.name} />}
+    </div>
   );
 }

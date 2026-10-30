@@ -31,11 +31,22 @@ export interface AssistantDeps {
   llm: LlmProvider;
 }
 
+export interface PendingConfirmation {
+  orderId: string;
+  token: string;
+  summary: string;
+  subtotalFcfa: number;
+  deliveryFeeFcfa: number;
+  totalFcfa: number;
+}
+
 export interface AssistantReply {
   text: string;
   handedToHuman: boolean;
   conversationId: string | null;
   businessId: string;
+  /** Renseigné quand prepare_order vient de chiffrer une commande : l'interface affiche la carte de confirmation structurée. */
+  pendingConfirmation: PendingConfirmation | null;
 }
 
 const MAX_TOOL_STEPS = 6;
@@ -124,7 +135,7 @@ async function run(
 
   const business = await store.getBusiness(businessId);
   if (!business) {
-    return { text: fr.assistant.businessNotFound, handedToHuman: false, conversationId: null, businessId };
+    return { text: fr.assistant.businessNotFound, handedToHuman: false, conversationId: null, businessId, pendingConfirmation: null };
   }
 
   const session = await store.getOrCreateSession(businessId, sessionId);
@@ -153,6 +164,7 @@ async function run(
       handedToHuman: true,
       conversationId: conversation.id,
       businessId,
+      pendingConfirmation: null,
     };
   }
 
@@ -215,6 +227,7 @@ async function run(
 
   const toolCtx: ToolContext = { store, business, session, conversation };
   let handedToHuman = false;
+  let pendingConfirmation: PendingConfirmation | null = null;
   let finalText: string | null = null;
 
   for (let step = 0; step < MAX_TOOL_STEPS; step += 1) {
@@ -243,6 +256,21 @@ async function run(
         sessionId,
       });
       if (isHandoff) handedToHuman = true;
+      if (
+        call.name === "prepare_order" &&
+        output.ok === true &&
+        typeof output.confirmationToken === "string" &&
+        typeof output.orderId === "string"
+      ) {
+        pendingConfirmation = {
+          orderId: output.orderId,
+          token: output.confirmationToken,
+          summary: typeof output.summary === "string" ? output.summary : "",
+          subtotalFcfa: Number(output.subtotalFcfa ?? 0),
+          deliveryFeeFcfa: Number(output.deliveryFeeFcfa ?? 0),
+          totalFcfa: Number(output.totalFcfa ?? 0),
+        };
+      }
       messages.push({
         role: "tool",
         toolCallId: call.id,
@@ -268,7 +296,7 @@ async function run(
     content: finalText,
   });
 
-  return { text: finalText, handedToHuman, conversationId: conversation.id, businessId };
+  return { text: finalText, handedToHuman, conversationId: conversation.id, businessId, pendingConfirmation };
 }
 
 async function executeToolCall(input: {
