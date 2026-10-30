@@ -1,14 +1,15 @@
 -- ============================================================================
 -- Oren - apply_all.sql (genere le 2026-10-30, ne pas editer a la main)
--- Contenu, dans l'ordre : 1) schema, 2) RLS, 3) seed de demonstration.
+-- Contenu, dans l'ordre : migrations triees par nom, puis le seed.
 -- Usage : Supabase Dashboard > SQL Editor > coller tout ce fichier > Run.
--- A executer UNE FOIS sur un projet vide. Une deuxieme execution echouera
--- (tables deja creees) : c'est normal, les migrations ne sont pas idempotentes.
+-- Projet vide : tout executer. Projet deja initialise avec une version
+-- anterieure : n'executer que les migrations plus recentes que la derniere
+-- deja appliquee (les migrations ne sont pas idempotentes).
 -- Apres execution, verifier avec : npm run check:remote
 -- ============================================================================
 
 -- ============================================================================
--- 1/3 - Schema (supabase/migrations/20261030000100_initial_schema.sql)
+-- 1/4 - Migration (supabase/migrations/20261030000100_initial_schema.sql)
 -- ============================================================================
 -- Oren — schéma initial (multi-entreprises).
 -- Règles appliquées en base : prix FCFA entiers (jamais de décimaux ni de
@@ -303,7 +304,7 @@ create index audit_log_business_id_idx on public.audit_log (business_id);
 create index audit_log_business_created_idx on public.audit_log (business_id, created_at);
 
 -- ============================================================================
--- 2/3 - Row Level Security (supabase/migrations/20261030000200_rls.sql)
+-- 2/4 - Migration (supabase/migrations/20261030000200_rls.sql)
 -- ============================================================================
 -- Oren — Row Level Security : isolation par entreprise sur CHAQUE table.
 --
@@ -527,7 +528,93 @@ create policy audit_log_insert_own on public.audit_log
   with check (business_id = public.staff_business_id());
 
 -- ============================================================================
--- 3/3 - Seed de demonstration (supabase/seed.sql)
+-- 3/4 - Migration (supabase/migrations/20261030000300_settings_owner_only.sql)
+-- ============================================================================
+-- Oren — les réglages sont réservés au rôle owner.
+-- Un membre du personnel (staff) voit les commandes et le catalogue,
+-- mais ne peut modifier ni les informations de l'entreprise, ni les
+-- zones de livraison, ni le menu. Lecture pour tout le staff de
+-- l'entreprise, écriture owner uniquement (en plus des règles métier
+-- déjà posées dans la migration 20261030000200_rls.sql).
+--
+-- Ré-exécutable : chaque politique est d'abord supprimée avec
+-- « if exists » (ancien et nouveau nom), donc coller ce fichier deux
+-- fois dans le SQL Editor donne le même résultat qu'une seule fois.
+
+-- business_info -------------------------------------------------------------
+drop policy if exists business_info_all_own on public.business_info;
+drop policy if exists business_info_select_own on public.business_info;
+drop policy if exists business_info_insert_owner on public.business_info;
+drop policy if exists business_info_update_owner on public.business_info;
+drop policy if exists business_info_delete_owner on public.business_info;
+
+create policy business_info_select_own on public.business_info
+  for select to authenticated
+  using (business_id = public.staff_business_id());
+
+create policy business_info_insert_owner on public.business_info
+  for insert to authenticated
+  with check (business_id = public.staff_business_id() and public.staff_role() = 'owner');
+
+create policy business_info_update_owner on public.business_info
+  for update to authenticated
+  using (business_id = public.staff_business_id() and public.staff_role() = 'owner')
+  with check (business_id = public.staff_business_id() and public.staff_role() = 'owner');
+
+create policy business_info_delete_owner on public.business_info
+  for delete to authenticated
+  using (business_id = public.staff_business_id() and public.staff_role() = 'owner');
+
+-- delivery_zones -------------------------------------------------------------
+drop policy if exists delivery_zones_all_own on public.delivery_zones;
+drop policy if exists delivery_zones_select_own on public.delivery_zones;
+drop policy if exists delivery_zones_insert_owner on public.delivery_zones;
+drop policy if exists delivery_zones_update_owner on public.delivery_zones;
+drop policy if exists delivery_zones_delete_owner on public.delivery_zones;
+
+create policy delivery_zones_select_own on public.delivery_zones
+  for select to authenticated
+  using (business_id = public.staff_business_id());
+
+create policy delivery_zones_insert_owner on public.delivery_zones
+  for insert to authenticated
+  with check (business_id = public.staff_business_id() and public.staff_role() = 'owner');
+
+create policy delivery_zones_update_owner on public.delivery_zones
+  for update to authenticated
+  using (business_id = public.staff_business_id() and public.staff_role() = 'owner')
+  with check (business_id = public.staff_business_id() and public.staff_role() = 'owner');
+
+create policy delivery_zones_delete_owner on public.delivery_zones
+  for delete to authenticated
+  using (business_id = public.staff_business_id() and public.staff_role() = 'owner');
+
+-- menu_items -----------------------------------------------------------------
+drop policy if exists menu_items_all_own on public.menu_items;
+drop policy if exists menu_items_select_own on public.menu_items;
+drop policy if exists menu_items_insert_owner on public.menu_items;
+drop policy if exists menu_items_update_owner on public.menu_items;
+drop policy if exists menu_items_delete_owner on public.menu_items;
+
+create policy menu_items_select_own on public.menu_items
+  for select to authenticated
+  using (business_id = public.staff_business_id());
+
+create policy menu_items_insert_owner on public.menu_items
+  for insert to authenticated
+  with check (business_id = public.staff_business_id() and public.staff_role() = 'owner');
+
+create policy menu_items_update_owner on public.menu_items
+  for update to authenticated
+  using (business_id = public.staff_business_id() and public.staff_role() = 'owner')
+  with check (business_id = public.staff_business_id() and public.staff_role() = 'owner');
+
+create policy menu_items_delete_owner on public.menu_items
+  for delete to authenticated
+  using (business_id = public.staff_business_id() and public.staff_role() = 'owner');
+
+-- ============================================================================
+-- 4/4 - Seed de demonstration (supabase/seed.sql)
 -- ============================================================================
 -- Oren — entreprise de démonstration (restaurant, Lomé).
 -- Appliqué par `supabase db reset` en local uniquement (jamais en production).

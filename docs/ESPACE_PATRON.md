@@ -1,0 +1,7 @@
+# Espace patron : connexion et gestion de l'entreprise (2026-10-30)
+
+Connexion et inscription par lien envoyé par e-mail (Supabase Auth, sans mot de passe) : `/inscription` recueille nom d'entreprise, type « restaurant », adresse web (slug) et téléphone, puis le lien reçu finalise la création sur `/bienvenue` (entreprise + ligne `staff` owner créées côté serveur, slug revérifié).
+Écrans connectés sous `/app` : « Mon entreprise » (horaires par jour, adresse, règles, texte libre, zones de livraison et frais), « Menu » (ajouter, modifier, désactiver des plats ; prix FCFA entier positif validé par Zod côté client et serveur, refus net des décimaux et négatifs), « Commandes » (lecture pour tout le staff) et « Équipe » (invitation par e-mail, rôle `staff` à droits limités).
+Migration `20261030000300_settings_owner_only.sql` : les réglages (infos entreprise, zones, menu) sont en lecture pour tout le staff mais en écriture `owner` uniquement ; `supabase/apply_all.sql` a été régénéré, et sur le projet distant déjà initialisé il suffit d'exécuter la section 3/4 de ce fichier dans le SQL Editor.
+Pré-requis dashboard Supabase : ajouter `http://localhost:3000/auth/callback` (et le domaine de production le moment venu) dans Auth > URL Configuration > Redirect URLs, sinon le lien e-mail ne reviendra pas sur l'application.
+Vérifié : `npm test` (65 tests, dont prix négatif/décimal refusés et droits staff en base), `npm run build` ; le parcours complet par lien e-mail reste à essayer avec une vraie boîte de réception.

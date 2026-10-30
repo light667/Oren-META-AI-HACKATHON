@@ -1,0 +1,29 @@
+import { BusinessManager, type BusinessInfoData, type ZoneData } from "@/components/business-manager";
+import { getStaffContext } from "@/lib/server-context";
+import { createClient } from "@/lib/supabase/server";
+
+export default async function BusinessPage() {
+  const ctx = await getStaffContext();
+  const supabase = await createClient();
+
+  const [{ data: info }, { data: zones }] = await Promise.all([
+    supabase
+      .from("business_info")
+      .select("opening_hours, address, rules, free_text")
+      .eq("business_id", ctx?.businessId ?? "")
+      .maybeSingle(),
+    supabase
+      .from("delivery_zones")
+      .select("id, neighborhood, fee_fcfa, is_active")
+      .eq("business_id", ctx?.businessId ?? "")
+      .order("neighborhood"),
+  ]);
+
+  return (
+    <BusinessManager
+      info={(info as BusinessInfoData | null) ?? null}
+      zones={(zones as ZoneData[] | null) ?? []}
+      canEdit={ctx?.role === "owner"}
+    />
+  );
+}

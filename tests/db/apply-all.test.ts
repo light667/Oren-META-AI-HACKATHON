@@ -34,6 +34,32 @@ describe("supabase/apply_all.sql", () => {
     expect(Number(policies.rows[0].n)).toBeGreaterThan(0);
   });
 
+  it("la migration droits staff (003) est ré-exécutable sans erreur", async () => {
+    // Régression : un DROP POLICY sans IF EXISTS échouait au second collage
+    // dans le SQL Editor (ERROR 42704, politique déjà supprimée).
+    const sql = readFileSync(
+      join(
+        process.cwd(),
+        "supabase",
+        "migrations",
+        "20261030000300_settings_owner_only.sql",
+      ),
+      "utf8",
+    );
+    await db.exec(sql);
+    await db.exec(sql);
+    const policies = await db.query<{ policyname: string }>(
+      `select policyname from pg_policies
+       where schemaname = 'public' and tablename = 'menu_items' order by policyname`,
+    );
+    expect(policies.rows.map((r) => r.policyname)).toEqual([
+      "menu_items_delete_owner",
+      "menu_items_insert_owner",
+      "menu_items_select_own",
+      "menu_items_update_owner",
+    ]);
+  });
+
   it("contient le seed : Chez Chef T, 8 plats, 3 zones", async () => {
     const business = await db.query<{ id: string }>(
       `select id from businesses where slug = 'chez-chef-t'`,
