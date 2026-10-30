@@ -103,6 +103,16 @@ describe("MetaLlmProvider.chat", () => {
     expect(sent.response_format.json_schema.name).toBe("Plat");
   });
 
+  it("refuse un tool_choice forcé (seul auto est accepté par l'API réelle)", async () => {
+    const provider = new MetaLlmProvider({
+      apiKey: "k",
+      fetchFn: vi.fn() as unknown as typeof fetch,
+    });
+    await expect(
+      provider.chat([{ role: "user", content: "x" }], { toolChoice: { name: "prix_plat" } }),
+    ).rejects.toMatchObject({ code: "TOOL_CHOICE_UNSUPPORTED" });
+  });
+
   it("refuse sans clé et remonte les erreurs HTTP", async () => {
     const noKey = new MetaLlmProvider({ apiKey: "", fetchFn: vi.fn() as unknown as typeof fetch });
     await expect(noKey.chat([{ role: "user", content: "x" }])).rejects.toMatchObject({

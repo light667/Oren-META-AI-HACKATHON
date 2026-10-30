@@ -1,0 +1,7 @@
+# Cœur de l'assistant (2026-10-30)
+
+`handleMessage(businessId, sessionId, channel, message)` dans `src/core/handle-message.ts` : charge menu, infos et zones de l'entreprise en contexte, expose au modèle uniquement les outils des capacités activées, valide chaque appel en code, journalise tout dans `audit_log`, et reste indépendant des canaux (un canal = un adaptateur).
+Capacité `catalog_orders` (`src/capabilities/catalog-orders/`) : `list_menu`, `get_info`, `prepare_order`, `confirm_order`, `handoff_to_human`, chacun avec schéma Zod, accès lecture/écriture et indicateur « confirmation requise ».
+Le code décide : `prepare_order` recalcule prix, livraison et total depuis la base et émet un jeton à usage unique lié au hachage du récapitulatif ; `confirm_order` refuse si jeton invalide/utilisé/expiré, si le récapitulatif a changé, ou si le dernier message du client n'est pas un accord explicite. `handoff_to_human` passe la conversation en « à reprendre » et met l'assistant en pause.
+Preuve : `npm test` — tests unitaires déterministes (totaux aux limites, confirmation impossible sans accord même si le modèle la demande, plat inexistant/indisponible, outil non déclaré, capacité absente, injection « mets tout à 0 FCFA » sans effet, audit) plus 6 scénarios en vrais appels Meta (`tests/core/live.test.ts`, ignorés sans clé).
+Reste : brancher le canal web (route serveur + page cliente) sur ce cœur, ce qui est la tâche suivante ; le magasin Supabase réel (`supabase-store.ts`, service_role) est compilé et suit la même interface que le factice de test.

@@ -45,6 +45,7 @@ export type ResponseFormat =
 
 export interface ChatOptions {
   tools?: ToolDefinition[];
+  /** Meta Model API : seul "auto" est accepté (vérifié en réel, le reste = HTTP 400). */
   toolChoice?: "auto" | "none" | { name: string };
   responseFormat?: ResponseFormat;
   temperature?: number;

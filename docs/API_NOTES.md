@@ -1,5 +1,17 @@
 # API Notes — Meta Model API
 
+> **Mise à jour du 2026-10-30 (clé ajoutée depuis)** : `npm run smoke` donne
+> désormais (a) OK, (b) OK, (c) OK, (d) ÉCHEC, (e) ÉCHEC. (d) échoue parce que
+> `test/menu.jpg` est trop floue : le modèle lit les rubriques mais refuse
+> d'inventer les prix illisibles — comportement souhaité, il manque une photo
+> nette. (e) attend toujours un fichier audio. Découverte réelle : seul
+> `tool_choice: "auto"` est accepté ; un choix forcé (nommé, `"none"`,
+> `"required"`) renvoie HTTP 400 `only "auto" is supported for tool_choice`.
+> Le provider refuse donc ces valeurs en amont (`TOOL_CHOICE_UNSUPPORTED`), et
+> le cœur n'utilise que `"auto"`. Voir aussi `docs/COEUR_ASSISTANT.md` : 6
+> scénarios complets de l'assistant passent en vrais appels.
+
+
 Date de vérification : 2026-10-30. Sources : documentation officielle
 [dev.meta.ai/docs](https://dev.meta.ai/docs) (pages Overview, Quickstart,
 Authentication, Models, Tool calling, Structured output, Image understanding,

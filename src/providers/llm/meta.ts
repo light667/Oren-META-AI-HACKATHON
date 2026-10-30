@@ -181,10 +181,16 @@ export class MetaLlmProvider implements LlmProvider {
       }));
     }
     if (options.toolChoice) {
-      body.tool_choice =
-        typeof options.toolChoice === "string"
-          ? options.toolChoice
-          : { type: "function", function: { name: options.toolChoice.name } };
+      // Vérifié en réel le 2026-10-30 : seul "auto" est accepté, tout autre
+      // choix (nommé, "none", "required") renvoie HTTP 400. On refuse ici
+      // avec un message clair plutôt que d'envoyer un appel voué à l'échec.
+      if (options.toolChoice !== "auto") {
+        throw new LlmProviderError(
+          'tool_choice forcé non supporté par la Meta Model API : seul "auto" est accepté.',
+          { code: "TOOL_CHOICE_UNSUPPORTED" },
+        );
+      }
+      body.tool_choice = "auto";
     }
     if (options.responseFormat) {
       body.response_format =

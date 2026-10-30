@@ -91,7 +91,9 @@ async function testOutil(): Promise<void> {
             },
           },
         ],
-        toolChoice: { name: "obtenir_prix_plat" },
+        // Seul tool_choice "auto" est accepté par l'API (vérifié en réel) :
+        // on demande donc l'appel explicitement dans le message.
+        toolChoice: "auto",
       },
     );
     const call = result.toolCalls[0];
