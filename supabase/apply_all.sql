@@ -2,14 +2,13 @@
 -- Oren - apply_all.sql (genere le 2026-10-30, ne pas editer a la main)
 -- Contenu, dans l'ordre : migrations triees par nom, puis le seed.
 -- Usage : Supabase Dashboard > SQL Editor > coller tout ce fichier > Run.
--- Projet vide : tout executer. Projet deja initialise avec une version
--- anterieure : n'executer que les migrations plus recentes que la derniere
--- deja appliquee (les migrations ne sont pas idempotentes).
+-- Projet vide : tout executer. Projet deja initialise : n'executer que les
+-- migrations plus recentes que la derniere deja appliquee.
 -- Apres execution, verifier avec : npm run check:remote
 -- ============================================================================
 
 -- ============================================================================
--- 1/4 - Migration (supabase/migrations/20261030000100_initial_schema.sql)
+-- 1/5 - Migration (supabase/migrations/20261030000100_initial_schema.sql)
 -- ============================================================================
 -- Oren — schéma initial (multi-entreprises).
 -- Règles appliquées en base : prix FCFA entiers (jamais de décimaux ni de
@@ -304,7 +303,7 @@ create index audit_log_business_id_idx on public.audit_log (business_id);
 create index audit_log_business_created_idx on public.audit_log (business_id, created_at);
 
 -- ============================================================================
--- 2/4 - Migration (supabase/migrations/20261030000200_rls.sql)
+-- 2/5 - Migration (supabase/migrations/20261030000200_rls.sql)
 -- ============================================================================
 -- Oren — Row Level Security : isolation par entreprise sur CHAQUE table.
 --
@@ -528,7 +527,7 @@ create policy audit_log_insert_own on public.audit_log
   with check (business_id = public.staff_business_id());
 
 -- ============================================================================
--- 3/4 - Migration (supabase/migrations/20261030000300_settings_owner_only.sql)
+-- 3/5 - Migration (supabase/migrations/20261030000300_settings_owner_only.sql)
 -- ============================================================================
 -- Oren — les réglages sont réservés au rôle owner.
 -- Un membre du personnel (staff) voit les commandes et le catalogue,
@@ -614,7 +613,91 @@ create policy menu_items_delete_owner on public.menu_items
   using (business_id = public.staff_business_id() and public.staff_role() = 'owner');
 
 -- ============================================================================
--- 4/4 - Seed de demonstration (supabase/seed.sql)
+-- 4/5 - Migration (supabase/migrations/20261030000400_order_alerts_push.sql)
+-- ============================================================================
+-- Oren — tableau patron temps réel, alertes et prise de contrôle.
+-- Ré-exécutable autant que possible (if exists / if not exists, do blocks).
+
+-- Nouveau statut patron « accepted » (acceptée), entre la réception
+-- (confirmed = confirmée par le client, affichée « Reçue ») et la
+-- préparation. Les horodatages received_at / accepted_at permettent
+-- d'enregistrer et d'afficher le délai d'acceptation.
+alter table public.orders
+  add column if not exists received_at timestamptz,
+  add column if not exists accepted_at timestamptz,
+  add column if not exists owner_notified_at timestamptz,
+  add column if not exists fallback_email_sent_at timestamptz;
+
+alter table public.orders drop constraint if exists orders_status_check;
+alter table public.orders
+  add constraint orders_status_check
+  check (status in ('pending', 'confirmed', 'accepted', 'preparing', 'ready', 'delivered', 'cancelled'));
+
+-- Pour que les événements UPDATE de Realtime portent l'ancienne ligne
+-- (détecter le passage pending -> confirmed côté patron).
+alter table public.orders replica identity full;
+alter table public.conversations replica identity full;
+alter table public.messages replica identity full;
+
+-- Abonnements Web Push du staff (notification navigateur hors page).
+create table if not exists public.push_subscriptions (
+  id uuid primary key default gen_random_uuid(),
+  business_id uuid not null references public.businesses (id) on delete cascade,
+  user_id uuid not null references auth.users (id) on delete cascade,
+  endpoint text not null unique,
+  p256dh text not null,
+  auth text not null,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists push_subscriptions_business_id_idx
+  on public.push_subscriptions (business_id);
+
+alter table public.push_subscriptions enable row level security;
+
+drop policy if exists push_subscriptions_select_own on public.push_subscriptions;
+drop policy if exists push_subscriptions_insert_own on public.push_subscriptions;
+drop policy if exists push_subscriptions_delete_own on public.push_subscriptions;
+
+create policy push_subscriptions_select_own on public.push_subscriptions
+  for select to authenticated
+  using (user_id = auth.uid());
+
+create policy push_subscriptions_insert_own on public.push_subscriptions
+  for insert to authenticated
+  with check (user_id = auth.uid() and business_id = public.staff_business_id());
+
+create policy push_subscriptions_delete_own on public.push_subscriptions
+  for delete to authenticated
+  using (user_id = auth.uid());
+
+revoke all on public.push_subscriptions from anon;
+grant select, insert, delete on public.push_subscriptions to authenticated;
+grant all on public.push_subscriptions to service_role;
+
+-- Publication Realtime (Supabase) : commandes, conversations, messages.
+-- Protégé pour rester exécutable hors Supabase (tests locaux PGlite).
+do $$
+begin
+  if exists (select from pg_publication where pubname = 'supabase_realtime') then
+    begin
+      alter publication supabase_realtime add table public.orders;
+    exception when duplicate_object then null;
+    end;
+    begin
+      alter publication supabase_realtime add table public.conversations;
+    exception when duplicate_object then null;
+    end;
+    begin
+      alter publication supabase_realtime add table public.messages;
+    exception when duplicate_object then null;
+    end;
+  end if;
+end;
+$$;
+
+-- ============================================================================
+-- 5/5 - Seed de demonstration (supabase/seed.sql)
 -- ============================================================================
 -- Oren — entreprise de démonstration (restaurant, Lomé).
 -- Appliqué par `supabase db reset` en local uniquement (jamais en production).

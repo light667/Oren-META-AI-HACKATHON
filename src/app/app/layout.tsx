@@ -26,6 +26,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     ...(isOwner ? [{ href: "/app/entreprise", label: fr.nav.business }] : []),
     { href: "/app/menu", label: fr.nav.menu },
     { href: "/app/commandes", label: fr.nav.orders },
+    { href: "/app/conversations", label: fr.conversations.title },
     ...(isOwner ? [{ href: "/app/equipe", label: fr.nav.team }] : []),
   ];
 

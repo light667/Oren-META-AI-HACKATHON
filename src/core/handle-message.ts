@@ -157,6 +157,32 @@ async function run(
     content: message,
   });
 
+  // Bouton « Couper l'assistant » (réglage patron) : arrêt immédiat pour
+  // toute l'entreprise. Le message est transmis à un humain, aucun
+  // appel au modèle.
+  if (business.config?.assistant_enabled === false) {
+    await store.updateConversation(conversation.id, {
+      status: "a_reprendre",
+      assistantPaused: true,
+    });
+    await store.logAudit({
+      businessId,
+      actorType: "system",
+      actorId: sessionId,
+      toolName: null,
+      action: "assistant_stopped",
+      input: {},
+      output: { ok: true, handedToHuman: true },
+    });
+    return {
+      text: fr.assistant.stoppedReply,
+      handedToHuman: true,
+      conversationId: conversation.id,
+      businessId,
+      pendingConfirmation: null,
+    };
+  }
+
   // Conversation déjà passée à un humain : l'assistant reste en pause.
   if (conversation.assistantPaused || conversation.status === "a_reprendre") {
     return {

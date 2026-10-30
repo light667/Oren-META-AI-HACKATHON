@@ -80,6 +80,12 @@ export interface OrderRecord {
   totalFcfa: number;
   deliveryFeeFcfa: number;
   paymentMethod: string;
+  createdAt?: string;
+  /** Quand le client a confirmé (commande « reçue » chez le patron). */
+  receivedAt?: string | null;
+  /** Quand le patron a accepté : le délai d'acceptation est enregistré. */
+  acceptedAt?: string | null;
+  fallbackEmailSentAt?: string | null;
   lines: OrderLineRecord[];
 }
 

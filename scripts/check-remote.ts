@@ -42,6 +42,7 @@ const TABLES = [
   "order_items",
   "confirmation_tokens",
   "audit_log",
+  "push_subscriptions",
 ] as const;
 
 const DEMO_BUSINESS_ID = "d0000000-0000-4000-8000-000000000001";

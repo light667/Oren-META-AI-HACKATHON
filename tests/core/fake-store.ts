@@ -239,7 +239,11 @@ export class FakeStore implements AssistantStore {
 
   async updateOrderStatus(businessId: string, orderId: string, status: string): Promise<void> {
     const order = this.orders.get(orderId);
-    if (order && order.businessId === businessId) order.status = status;
+    if (order && order.businessId === businessId) {
+      order.status = status;
+      if (status === "confirmed") order.receivedAt = this.nowIso();
+      if (status === "accepted") order.acceptedAt = this.nowIso();
+    }
   }
 
   async createConfirmationToken(input: {

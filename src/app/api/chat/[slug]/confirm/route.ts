@@ -2,6 +2,8 @@ import { z } from "zod";
 import { confirmWebOrder, webConfirmSchema } from "@/channels/web";
 import { createWebDeps, resolveBusinessBySlug } from "@/channels/web/server";
 import { fr } from "@/i18n/fr";
+import { notifyOrderReceived } from "@/lib/order-notifications";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export const instant = false;
 
@@ -39,6 +41,16 @@ export async function POST(request: Request, { params }: Params) {
   });
   if (!result.ok) {
     return Response.json({ error: result.error }, { status: 409 });
+  }
+  // Alerte patron immédiate (temps réel + Web Push). Ne bloque pas le client.
+  try {
+    await notifyOrderReceived(
+      createAdminClient(),
+      { id: business.id, name: business.name },
+      { id: result.orderId, totalFcfa: result.totalFcfa },
+    );
+  } catch {
+    // L'alerte ne doit jamais faire échouer une commande confirmée.
   }
   return Response.json(result);
 }

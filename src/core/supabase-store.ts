@@ -372,7 +372,9 @@ export class SupabaseAssistantStore implements AssistantStore {
   async getOrder(businessId: string, orderId: string): Promise<OrderRecord | null> {
     const { data } = await this.db
       .from("orders")
-      .select("id, business_id, session_id, conversation_id, status, total_fcfa, delivery_fee_fcfa, payment_method")
+      // select * : reste lisible avant la migration 004 (colonnes
+      // received_at/accepted_at absentes -> undefined -> null ci-dessous).
+      .select("*")
       .eq("business_id", businessId)
       .eq("id", orderId)
       .maybeSingle();
@@ -391,6 +393,10 @@ export class SupabaseAssistantStore implements AssistantStore {
       totalFcfa: data.total_fcfa,
       deliveryFeeFcfa: data.delivery_fee_fcfa,
       paymentMethod: data.payment_method,
+      createdAt: data.created_at,
+      receivedAt: data.received_at,
+      acceptedAt: data.accepted_at,
+      fallbackEmailSentAt: data.fallback_email_sent_at,
       lines: (items ?? []).map((i) => ({
         menuItemId: i.menu_item_id,
         itemName: i.item_name,
@@ -402,9 +408,14 @@ export class SupabaseAssistantStore implements AssistantStore {
   }
 
   async updateOrderStatus(businessId: string, orderId: string, status: string): Promise<void> {
+    // Horodatages métier : réception (confirmation client) et acceptation
+    // patron, pour enregistrer le délai d'acceptation.
+    const patch: Record<string, unknown> = { status };
+    if (status === "confirmed") patch.received_at = new Date().toISOString();
+    if (status === "accepted") patch.accepted_at = new Date().toISOString();
     await this.db
       .from("orders")
-      .update({ status })
+      .update(patch)
       .eq("business_id", businessId)
       .eq("id", orderId);
   }

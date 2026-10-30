@@ -68,6 +68,7 @@ export const ALL_TABLES = [
   "order_items",
   "confirmation_tokens",
   "audit_log",
+  "push_subscriptions",
 ] as const;
 
 const SUPABASE_SHIM = `

@@ -20,18 +20,22 @@ interface Props {
   whatsappDigits: string | null;
 }
 
+/**
+ * Session anonyme gardée dans le navigateur, par entreprise.
+ * Résolue à la demande dans le navigateur (jamais pendant le rendu :
+ * le prérendu partiel figerait une valeur nulle côté client).
+ */
+function resolveAnonymousId(slug: string): string {
+  const key = `oren-anon-${slug}`;
+  let id = window.localStorage.getItem(key);
+  if (!id) {
+    id = window.crypto.randomUUID();
+    window.localStorage.setItem(key, id);
+  }
+  return id;
+}
+
 export function PublicChat({ slug, businessName, whatsappDigits }: Props) {
-  // Session anonyme gardée dans le navigateur, par entreprise.
-  const [anonymousId] = useState<string | null>(() => {
-    if (typeof window === "undefined") return null;
-    const key = `oren-anon-${slug}`;
-    let id = window.localStorage.getItem(key);
-    if (!id) {
-      id = window.crypto.randomUUID();
-      window.localStorage.setItem(key, id);
-    }
-    return id;
-  });
   const [messages, setMessages] = useState<ChatMessage[]>([
     { role: "assistant", text: fr.chat.greeting.replace("{business}", businessName) },
   ]);
@@ -40,7 +44,7 @@ export function PublicChat({ slug, businessName, whatsappDigits }: Props) {
   const [handed, setHanded] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState<PendingConfirmation | null>(null);
-  const [confirmed, setConfirmed] = useState<{ orderId: string; totalFcfa: number } | null>(null);
+  const [confirmed, setConfirmed] = useState<{ orderId: string; totalFcfa: number; status: string } | null>(null);
   const [customer, setCustomer] = useState({ name: "", phone: "" });
   const [payment, setPayment] = useState<"cash_on_delivery" | "cash_on_pickup">("cash_on_delivery");
   const [confirmBusy, setConfirmBusy] = useState(false);
@@ -51,10 +55,34 @@ export function PublicChat({ slug, businessName, whatsappDigits }: Props) {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
   }, [messages, pending, confirmed]);
 
+  // Statut de la commande à l'écran, sans recharger : interrogation
+  // légère tant que la commande n'est pas livrée ou annulée.
+  useEffect(() => {
+    if (!confirmed) return;
+    if (confirmed.status === "delivered" || confirmed.status === "cancelled") return;
+    const anonymousId = resolveAnonymousId(slug);
+    const timer = window.setInterval(async () => {
+      try {
+        const response = await fetch(
+          `/api/chat/${slug}/order-status?sessionId=${encodeURIComponent(anonymousId)}&orderId=${encodeURIComponent(confirmed.orderId)}`,
+        );
+        if (!response.ok) return;
+        const data = (await response.json()) as { status?: string };
+        if (data.status) {
+          setConfirmed((prev) => (prev ? { ...prev, status: data.status ?? prev.status } : prev));
+        }
+      } catch {
+        // Prochain essai au prochain tic.
+      }
+    }, 3000);
+    return () => window.clearInterval(timer);
+  }, [confirmed, slug]);
+
   async function send(event: React.FormEvent) {
     event.preventDefault();
     const text = draft.trim();
-    if (!text || !anonymousId || sending || handed) return;
+    if (!text || sending || handed) return;
+    const anonymousId = resolveAnonymousId(slug);
     setDraft("");
     setError(null);
     setSending(true);
@@ -113,7 +141,8 @@ export function PublicChat({ slug, businessName, whatsappDigits }: Props) {
   }
 
   async function askHuman() {
-    if (!anonymousId || handed) return;
+    if (handed) return;
+    const anonymousId = resolveAnonymousId(slug);
     try {
       await fetch(`/api/chat/${slug}/human`, {
         method: "POST",
@@ -130,7 +159,8 @@ export function PublicChat({ slug, businessName, whatsappDigits }: Props) {
 
   async function confirmOrder(event: React.FormEvent) {
     event.preventDefault();
-    if (!pending || !anonymousId) return;
+    if (!pending) return;
+    const anonymousId = resolveAnonymousId(slug);
     setConfirmBusy(true);
     setConfirmError(null);
     try {
@@ -149,7 +179,11 @@ export function PublicChat({ slug, businessName, whatsappDigits }: Props) {
         | { ok?: boolean; orderId?: string; totalFcfa?: number; error?: string }
         | null;
       if (!response.ok || !data?.ok) throw new Error(data?.error ?? fr.chat.confirmError);
-      setConfirmed({ orderId: data.orderId ?? "", totalFcfa: data.totalFcfa ?? pending.totalFcfa });
+      setConfirmed({
+        orderId: data.orderId ?? "",
+        totalFcfa: data.totalFcfa ?? pending.totalFcfa,
+        status: "confirmed",
+      });
       setPending(null);
     } catch (err) {
       setConfirmError(err instanceof Error ? err.message : fr.chat.confirmError);
@@ -238,6 +272,10 @@ export function PublicChat({ slug, businessName, whatsappDigits }: Props) {
               <p className="mt-1 text-sm text-muted-foreground">
                 {fr.chat.totalLabel} : {confirmed.totalFcfa} {fr.common.currency}
               </p>
+              <p className="mt-1 text-sm">
+                {fr.orders.yourOrderStatus} :{" "}
+                <span className="font-medium">{fr.orders.status[confirmed.status] ?? confirmed.status}</span>
+              </p>
             </CardContent>
           </Card>
         )}
@@ -249,10 +287,10 @@ export function PublicChat({ slug, businessName, whatsappDigits }: Props) {
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           placeholder={fr.chat.placeholder}
-          disabled={handed || !anonymousId}
+          disabled={handed}
           aria-label={fr.chat.placeholder}
         />
-        <Button type="submit" disabled={sending || handed || !anonymousId || !draft.trim()}>
+        <Button type="submit" disabled={sending || handed || !draft.trim()}>
           {sending ? fr.chat.sending : fr.chat.send}
         </Button>
       </form>
