@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
+import { Logo } from "@/components/logo";
 import { SignOutButton } from "@/components/sign-out-button";
-import { fr, productName } from "@/i18n/fr";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { fr } from "@/i18n/fr";
 import { getStaffContext } from "@/lib/server-context";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
 
@@ -35,14 +37,18 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     <div className="flex min-h-full flex-1 flex-col">
       <header className="border-b">
         <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-3 px-4 py-3">
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold">{ctx.business.name}</p>
-            <p className="text-xs text-muted-foreground">
-              {productName} · {fr.shell.mySpace}
-            </p>
+          <div className="flex min-w-0 items-center gap-3">
+            <Link href="/" aria-label={fr.nav.home}>
+              <Logo markClassName="h-8 w-8" wordmarkClassName="hidden text-base font-bold sm:inline" />
+            </Link>
+            <div className="min-w-0 border-l pl-3">
+              <p className="truncate text-sm font-semibold">{ctx.business.name}</p>
+              <p className="text-xs text-muted-foreground">{fr.shell.mySpace}</p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <Badge variant="secondary">{isOwner ? fr.shell.roleOwner : fr.shell.roleStaff}</Badge>
+            <ThemeToggle />
             <SignOutButton />
           </div>
         </div>

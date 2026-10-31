@@ -2,6 +2,7 @@ import { z } from "zod";
 import { handleWebMessage } from "@/channels/web";
 import { createWebDeps, resolveBusinessBySlug } from "@/channels/web/server";
 import { fr } from "@/i18n/fr";
+import { chatRateLimiter, clientIp, rateLimitMessage } from "@/lib/rate-limit";
 
 export const instant = false;
 
@@ -29,6 +30,22 @@ export async function POST(request: Request, { params }: Params) {
   const business = await resolveBusinessBySlug(deps, slug);
   if (!business) {
     return Response.json({ error: fr.chat.notFoundBody }, { status: 404 });
+  }
+
+  // Garde-fou coût : avant tout appel au modèle.
+  const verdict = chatRateLimiter.check({
+    businessId: business.id,
+    sessionId: parsed.data.sessionId,
+    ip: clientIp(request),
+  });
+  if (!verdict.allowed && verdict.reason) {
+    return Response.json(
+      { error: rateLimitMessage(verdict.reason, fr.chat) },
+      {
+        status: 429,
+        headers: { "Retry-After": String(verdict.retryAfterSeconds ?? 60) },
+      },
+    );
   }
 
   const encoder = new TextEncoder();

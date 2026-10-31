@@ -9,6 +9,9 @@ export const productName =
 export const fr = {
   app: {
     title: productName,
+    themeToLight: "Passer en mode clair",
+    themeToDark: "Passer en mode sombre",
+    poweredBy: "Propulsé par",
     tagline: "Assistant IA pour les petites entreprises",
     description:
       "Un assistant qui répond à vos clients en français et agit : commandes, passage à un humain, et plus.",
@@ -23,6 +26,31 @@ export const fr = {
     cardBody:
       "Inscrivez votre entreprise, ajoutez votre menu, et laissez l'assistant répondre à vos clients. Paiement à la livraison, prix en FCFA.",
     aiNotice: "Vos clients savent qu'ils parlent à un assistant IA et peuvent demander un humain à tout moment.",
+    heroTitle: "Votre assistant qui répond, commande et vous passe la main.",
+    promise:
+      "Un assistant qui répond à vos clients en français, jour et nuit — et qui agit : il prend la commande, la transmet à votre cuisine, et vous passe la main dès qu'un humain vaut mieux.",
+    demoCta: "Essayer l'assistant de démonstration",
+    demoSlug: "chez-chef-t",
+    demoNote:
+      "La démonstration est le vrai assistant d'un restaurant de Lomé : demandez le menu, commandez deux plats, et regardez la commande partir après votre confirmation.",
+    benefitsTitle: "Ce que ça change pour vous",
+    benefits: [
+      {
+        title: "Il prend de vraies commandes",
+        body: "Pas un simple catalogue : l'assistant compose la commande, le code calcule le total en FCFA, vous validez avec le client, et la commande arrive chez vous en temps réel.",
+      },
+      {
+        title: "Prêt en moins de dix minutes",
+        body: "Une photo de votre menu papier et un message vocal suffisent : l'assistant prépare votre restaurant, vous vérifiez chaque prix, puis vous publiez.",
+      },
+      {
+        title: "Vous gardez la main",
+        body: "Chaque commande attend votre acceptation, un humain peut reprendre n'importe quelle conversation, et vos clients savent qu'ils parlent à une IA.",
+      },
+    ],
+    ownerTitle: "Vous êtes patron de restaurant ?",
+    ownerBody:
+      "Créez votre entreprise, photographiez votre menu, et partagez votre lien ou votre QR code. Vos clients commandent sans installer d'application.",
   },
   common: {
     loading: "Chargement…",
@@ -270,6 +298,9 @@ export const fr = {
     notFoundTitle: "Entreprise introuvable",
     notFoundBody: "Ce lien ne correspond à aucune entreprise. Vérifiez l'adresse ou le QR code utilisé.",
     loadError: "Impossible d'envoyer le message. Vérifiez votre connexion et réessayez.",
+    rateLimitedSession: "Vous envoyez des messages très vite. Patientez une petite minute, puis réessayez.",
+    rateLimitedIp: "Trop de messages arrivent depuis cette connexion. Patientez une petite minute, puis réessayez.",
+    rateLimitedBusiness: "Le restaurant a reçu beaucoup de messages aujourd'hui et l'assistant fait une pause. Réessayez demain, ou écrivez directement au restaurant.",
   },
   setup: {
     navLabel: "Mise en route",

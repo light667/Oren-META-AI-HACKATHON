@@ -78,6 +78,13 @@ docs/                    notes, API_NOTES.md, QUESTIONS.md
 10. **Prix en FCFA, entiers.** Jamais de décimaux ni de nombres négatifs.
 11. **Transparence :** le client sait qu'il parle à un assistant IA et peut demander un humain à tout moment.
 
+## Tests et maîtrise des coûts
+
+- `npm test` ne lance QUE les tests rapides, sans aucun appel à la Meta Model API (fichiers `**/live.test.ts` exclus). C'est la commande de vérification courante d'une tâche.
+- `npm run test:live` lance tous les tests en vrais appels Meta (cœur `tests/core/live.test.ts`, import `tests/import/live.test.ts`). À ne lancer qu'avant un commit important, jamais en boucle : chaque exécution consomme la clé API.
+- `npm run test:db` lance les tests base de données (PGlite local, aucun appel Meta).
+- Les routes publiques `/api/chat/[slug]` sont protégées avant tout appel au modèle (`src/lib/rate-limit.ts`) : limite par session/minute, par IP/minute et plafond quotidien par entreprise, réglables par `CHAT_RATE_LIMIT_PER_MINUTE_SESSION`, `CHAT_RATE_LIMIT_PER_MINUTE_IP`, `CHAT_DAILY_LIMIT_PER_BUSINESS`. Compteurs en mémoire par instance : garde-fou de coût, pas compteur global.
+
 ## Définition de « terminé » pour une tâche
 
 - Le critère d'acceptation est vérifié par un test automatique qui passe.

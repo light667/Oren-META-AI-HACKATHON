@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { PendingConfirmation } from "@/core/handle-message";
+import { LogoMark } from "@/components/logo";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { fr } from "@/i18n/fr";
 
 interface ChatMessage {
@@ -196,8 +198,14 @@ export function PublicChat({ slug, businessName, whatsappDigits }: Props) {
     <div className="mx-auto flex h-dvh w-full max-w-md flex-col">
       <header className="border-b px-4 py-3">
         <div className="flex items-center justify-between gap-3">
-          <h1 className="truncate text-base font-semibold">{businessName}</h1>
-          <Badge variant="secondary">{fr.chat.aiNotice}</Badge>
+          <div className="flex min-w-0 items-center gap-2">
+            <LogoMark className="h-7 w-7 shrink-0" />
+            <h1 className="truncate text-base font-semibold">{businessName}</h1>
+          </div>
+          <div className="flex items-center gap-1">
+            <Badge variant="secondary">{fr.chat.aiNotice}</Badge>
+            <ThemeToggle />
+          </div>
         </div>
         <div className="mt-2 flex flex-wrap gap-2">
           <Button type="button" variant="outline" size="sm" onClick={askHuman} disabled={handed}>
@@ -294,6 +302,9 @@ export function PublicChat({ slug, businessName, whatsappDigits }: Props) {
           {sending ? fr.chat.sending : fr.chat.send}
         </Button>
       </form>
+      <p className="flex items-center justify-center gap-1.5 border-t py-2 text-xs text-muted-foreground">
+        {fr.app.poweredBy} <LogoMark className="h-4 w-4" /> {fr.app.title}
+      </p>
     </div>
   );
 }

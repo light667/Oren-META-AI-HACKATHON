@@ -25,8 +25,14 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fr" className={`${inter.variable} dark h-full antialiased`}>
+    <html lang="fr" className={`${inter.variable} dark h-full antialiased`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col bg-background font-sans text-foreground">
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{var t=localStorage.getItem('oren-theme');if(t==='light'){document.documentElement.classList.remove('dark')}else if(t==='dark'){document.documentElement.classList.add('dark')}}catch(e){}",
+          }}
+        />
         {children}
       </body>
     </html>
