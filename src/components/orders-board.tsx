@@ -66,45 +66,54 @@ export function OrdersBoard({
   const [error, setError] = useState<string | null>(null);
   const [notifState, setNotifState] = useState<"idle" | "on" | "blocked">("idle");
   const knownIds = useRef(new Set(initialOrders.map((o) => o.id)));
+  const soundedIds = useRef(new Set<string>());
 
   // Temps réel : toute commande de l'entreprise, dès qu'elle change en base.
   useEffect(() => {
     const supabase = createClient();
-    // Realtime applique la RLS avec le jeton de session : sans setAuth
-    // explicite, le client cookie (SSR) ne reçoit aucun événement.
-    void supabase.auth.getSession().then(({ data }) => {
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    let cancelled = false;
+    // Realtime applique la RLS au moment de l'abonnement : le jeton de
+    // session doit être posé AVANT subscribe, sinon aucun événement.
+    void (async () => {
+      const { data } = await supabase.auth.getSession();
       if (data.session) {
-        void supabase.realtime.setAuth(data.session.access_token);
+        await supabase.realtime.setAuth(data.session.access_token);
       }
-    });
-    const channel = supabase
-      .channel(`orders-${businessId}`)
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "orders", filter: `business_id=eq.${businessId}` },
-        (payload) => {
-          const next = payload.new as OrderRow;
-          const prev = payload.old as Partial<OrderRow>;
-          if (!next?.id) return;
-          setOrders((current) => {
-            const existing = current.find((o) => o.id === next.id);
-            if (existing) {
-              return current.map((o) => (o.id === next.id ? { ...existing, ...next } : o));
+      if (cancelled) return;
+      channel = supabase
+        .channel(`orders-${businessId}`)
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "orders", filter: `business_id=eq.${businessId}` },
+          (payload) => {
+            const next = payload.new as OrderRow;
+            const prev = payload.old as Partial<OrderRow>;
+            if (!next?.id) return;
+            setOrders((current) => {
+              const existing = current.find((o) => o.id === next.id);
+              if (existing) {
+                return current.map((o) => (o.id === next.id ? { ...existing, ...next } : o));
+              }
+              return [next, ...current];
+            });
+            const isArrival =
+              (payload.eventType === "INSERT" && next.status === "confirmed") ||
+              (payload.eventType === "UPDATE" && prev.status === "pending" && next.status === "confirmed");
+            // Le brouillon (INSERT pending) ne doit pas « consommer »
+            // l'arrivée : on ne sonne qu'à la confirmation, une fois.
+            if (isArrival && !soundedIds.current.has(next.id)) {
+              soundedIds.current.add(next.id);
+              playNewOrderSound();
             }
-            return [next, ...current];
-          });
-          const isArrival =
-            (payload.eventType === "INSERT" && next.status === "confirmed") ||
-            (payload.eventType === "UPDATE" && prev.status === "pending" && next.status === "confirmed");
-          if (isArrival && !knownIds.current.has(next.id)) {
-            playNewOrderSound();
-          }
-          knownIds.current.add(next.id);
-        },
-      )
-      .subscribe();
+            knownIds.current.add(next.id);
+          },
+        )
+        .subscribe();
+    })();
     return () => {
-      void supabase.removeChannel(channel);
+      cancelled = true;
+      if (channel) void supabase.removeChannel(channel);
     };
   }, [businessId]);
 

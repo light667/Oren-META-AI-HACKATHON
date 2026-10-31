@@ -48,14 +48,16 @@ export function ConversationThread({
   // Nouveaux messages du fil en temps réel (client qui écrit, etc.).
   useEffect(() => {
     const supabase = createClient();
-    // Même règle que le tableau commandes : Realtime + RLS exige le jeton.
-    void supabase.auth.getSession().then(({ data }) => {
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    let cancelled = false;
+    // Même règle que le tableau commandes : jeton posé AVANT l'abonnement.
+    void (async () => {
+      const { data } = await supabase.auth.getSession();
       if (data.session) {
-        void supabase.realtime.setAuth(data.session.access_token);
+        await supabase.realtime.setAuth(data.session.access_token);
       }
-    });
-    const channel = supabase
-      .channel(`messages-${conversationId}`)
+      if (cancelled) return;
+      channel = supabase.channel(`messages-${conversationId}`)
       .on(
         "postgres_changes",
         {
@@ -71,9 +73,11 @@ export function ConversationThread({
           );
         },
       )
-      .subscribe();
+        .subscribe();
+    })();
     return () => {
-      void supabase.removeChannel(channel);
+      cancelled = true;
+      if (channel) void supabase.removeChannel(channel);
     };
   }, [conversationId, businessId]);
 

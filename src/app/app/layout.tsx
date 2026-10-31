@@ -23,6 +23,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const isOwner = ctx.role === "owner";
   const links = [
+    ...(isOwner ? [{ href: "/app/mise-en-route", label: fr.setup.navLabel }] : []),
     ...(isOwner ? [{ href: "/app/entreprise", label: fr.nav.business }] : []),
     { href: "/app/menu", label: fr.nav.menu },
     { href: "/app/commandes", label: fr.nav.orders },

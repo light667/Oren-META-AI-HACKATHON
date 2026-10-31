@@ -5,8 +5,17 @@ export const instant = false;
 
 /**
  * E-mail de secours des commandes non acceptées (délai réglable,
- * 3 minutes par défaut). Appelé chaque minute par Vercel Cron
- * (voir vercel.json) ; protégé par CRON_SECRET.
+ * 3 minutes par défaut).
+ *
+ * Déclenchement principal : un cron EXTERNE gratuit (cron-job.org)
+ * appelle cette route toutes les minutes — voir docs/ALERTES_CRON.md.
+ * Le cron Vercel de vercel.json n'est qu'un filet de sécurité quotidien :
+ * sur le forfait gratuit (Hobby), Vercel limite les crons à une fois
+ * par jour et refuse au déploiement toute expression plus fréquente,
+ * ce qui ne peut pas servir un délai de 3 minutes.
+ *
+ * Protection : en-tête `x-cron-secret: <CRON_SECRET>` ou
+ * `Authorization: Bearer <CRON_SECRET>`. GET et POST acceptés.
  */
 async function handle(request: Request) {
   const secret = process.env.CRON_SECRET;
