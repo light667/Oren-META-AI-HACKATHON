@@ -4,7 +4,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { fr } from "@/i18n/fr";
+import { formatFcfa } from "@/lib/format";
 import { acceptanceDelayMs, ownerNextStatuses, type OrderStatus } from "@/lib/order-transitions";
 import { createClient } from "@/lib/supabase/client";
 
@@ -64,6 +67,8 @@ export function OrdersBoard({
   const [orders, setOrders] = useState<OrderRow[]>(initialOrders);
   const [nowMs, setNowMs] = useState(() => Date.now());
   const [error, setError] = useState<string | null>(null);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const soundEnabledRef = useRef(true);
   const [notifState, setNotifState] = useState<"idle" | "on" | "blocked">("idle");
   const knownIds = useRef(new Set(initialOrders.map((o) => o.id)));
   const soundedIds = useRef(new Set<string>());
@@ -102,7 +107,7 @@ export function OrdersBoard({
               (payload.eventType === "UPDATE" && prev.status === "pending" && next.status === "confirmed");
             // Le brouillon (INSERT pending) ne doit pas « consommer »
             // l'arrivée : on ne sonne qu'à la confirmation, une fois.
-            if (isArrival && !soundedIds.current.has(next.id)) {
+            if (isArrival && soundEnabledRef.current && !soundedIds.current.has(next.id)) {
               soundedIds.current.add(next.id);
               playNewOrderSound();
             }
@@ -171,20 +176,53 @@ export function OrdersBoard({
     }
   }
 
+  function toggleSound(value: boolean) {
+    setSoundEnabled(value);
+    soundEnabledRef.current = value;
+  }
+
+  const columns: { id: keyof typeof fr.board.columns; statuses: string[] }[] = [
+    { id: "nouvelles", statuses: ["pending", "confirmed"] },
+    { id: "enPreparation", statuses: ["accepted", "preparing"] },
+    { id: "pretes", statuses: ["ready"] },
+    { id: "terminees", statuses: ["delivered", "cancelled"] },
+  ];
+  const newCount = orders.filter((o) => o.status === "confirmed").length;
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{fr.orders.title}</h1>
+          <h1 className="font-heading text-2xl font-bold tracking-tight">
+            {fr.orders.title}
+            {newCount > 0 && (
+              <Badge className="ml-2 align-middle">
+                {newCount} {fr.board.newBadge}
+              </Badge>
+            )}
+          </h1>
           <p className="mt-1 text-sm text-muted-foreground">{fr.orders.boardHelp}</p>
         </div>
-        {notifState === "on" ? (
-          <Badge variant="secondary">{fr.orders.notificationsOn}</Badge>
-        ) : (
-          <Button type="button" variant="outline" size="sm" onClick={enableNotifications}>
-            {fr.orders.enableNotifications}
-          </Button>
-        )}
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Switch
+              id="sound-toggle"
+              checked={soundEnabled}
+              onCheckedChange={toggleSound}
+              aria-label={fr.board.soundOn}
+            />
+            <Label htmlFor="sound-toggle" className="text-sm">
+              {soundEnabled ? fr.board.soundOn : fr.board.soundOff}
+            </Label>
+          </div>
+          {notifState === "on" ? (
+            <Badge variant="secondary">{fr.orders.notificationsOn}</Badge>
+          ) : (
+            <Button type="button" variant="outline" size="sm" onClick={enableNotifications}>
+              {fr.orders.enableNotifications}
+            </Button>
+          )}
+        </div>
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
 
@@ -195,8 +233,22 @@ export function OrdersBoard({
           </CardContent>
         </Card>
       ) : (
-        <ul className="space-y-3">
-          {orders.map((order) => {
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {columns.map((column) => {
+            const columnOrders = orders.filter((o) => column.statuses.includes(o.status));
+            return (
+              <section key={column.id} aria-label={fr.board.columns[column.id]} className="space-y-3">
+                <h2 className="flex items-center justify-between text-sm font-semibold">
+                  {fr.board.columns[column.id]}
+                  <Badge variant="secondary">{columnOrders.length}</Badge>
+                </h2>
+                {columnOrders.length === 0 ? (
+                  <p className="rounded-xl border border-dashed p-3 text-sm text-muted-foreground">
+                    {fr.board.emptyColumn}
+                  </p>
+                ) : (
+                  <ul className="space-y-3">
+                    {columnOrders.map((order) => {
             const delay = formatDelay(
               acceptanceDelayMs({
                 receivedAt: order.received_at,
@@ -215,7 +267,7 @@ export function OrdersBoard({
                     <div className="flex items-center justify-between gap-3">
                       <div>
                         <p className="text-sm font-medium">
-                          {fr.orders.total} : {order.total_fcfa} {fr.common.currency}
+                          {fr.orders.total} : {formatFcfa(order.total_fcfa)}
                         </p>
                         <p className="text-sm text-muted-foreground">
                           {fr.orders.payment[order.payment_method] ?? order.payment_method} ·{" "}
@@ -230,8 +282,16 @@ export function OrdersBoard({
                           </p>
                         )}
                         {waitingMs !== null && waitingMs > 0 && (
-                          <p className="text-xs text-muted-foreground">
-                            {fr.orders.waitingFor} {formatDelay(waitingMs)}
+                          <p
+                            className={`text-xs font-semibold ${
+                              waitingMs < 5 * 60_000
+                                ? "text-[var(--success)]"
+                                : waitingMs < 15 * 60_000
+                                  ? "text-[var(--warning)]"
+                                  : "text-destructive"
+                            }`}
+                          >
+                            {fr.board.waiting} {formatDelay(waitingMs)}
                           </p>
                         )}
                       </div>
@@ -257,9 +317,14 @@ export function OrdersBoard({
                   </CardContent>
                 </Card>
               </li>
+                    );
+                    })}
+                  </ul>
+                )}
+              </section>
             );
           })}
-        </ul>
+        </div>
       )}
     </div>
   );

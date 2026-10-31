@@ -12,6 +12,7 @@
     "test:db": "vitest run tests/db",
     "test:watch": "vitest",
     "smoke": "tsx scripts/smoke.ts",
+    "eval": "tsx scripts/eval.ts",
     "check:remote": "tsx scripts/check-remote.ts",
     "typecheck": "tsc --noEmit"
   },

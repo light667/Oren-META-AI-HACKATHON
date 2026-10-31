@@ -36,7 +36,7 @@ async function postJson(path: string, body: unknown): Promise<Record<string, unk
   return data ?? {};
 }
 
-export function SetupWizard() {
+export function SetupWizard({ slug }: { slug: string }) {
   const [draft, setDraft] = useState<RestaurantDraft>(emptyDraft);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [transcript, setTranscript] = useState<string | null>(null);
@@ -152,15 +152,37 @@ export function SetupWizard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{fr.setup.title}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{fr.setup.intro}</p>
+        <h1 className="font-heading text-3xl font-bold tracking-tight">{fr.setup.title}</h1>
+        <p className="mt-1 text-muted-foreground">{fr.setup.intro}</p>
       </div>
+      <ol className="flex flex-wrap gap-2" aria-label={fr.setup.navLabel}>
+        {[fr.setup.stepImport, fr.setup.stepReview, fr.setup.stepPublish].map((step, i) => (
+          <li
+            key={step}
+            className={`rounded-full px-3.5 py-2 text-sm font-semibold ${
+              published || i === 0 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+            }`}
+          >
+            {step}
+          </li>
+        ))}
+      </ol>
       {error && <p className="text-sm text-destructive">{error}</p>}
       {published && (
         <Card>
           <CardContent className="space-y-3 pt-6">
             <p className="text-sm">{fr.setup.published}</p>
-            <Button type="button" render={<Link href="/app/menu" />}>{fr.setup.goMenu}</Button>
+            <div className="flex flex-wrap gap-2">
+              <Button type="button" render={<Link href={`/${slug}`} />}>
+                {fr.setup.tryAssistant}
+              </Button>
+              <Button type="button" variant="outline" render={<Link href="/app/menu" />}>
+                {fr.setup.goMenu}
+              </Button>
+              <Button type="button" variant="outline" render={<Link href="/app/lien" />}>
+                {fr.nav.linkQr}
+              </Button>
+            </div>
           </CardContent>
         </Card>
       )}

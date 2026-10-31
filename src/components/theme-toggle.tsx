@@ -1,17 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Moon, Sun } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { fr } from "@/i18n/fr";
 
-/** Bascule clair/sombre : préférence gardée dans le navigateur. */
+/** Bascule clair/sombre : préférence gardée dans le navigateur. Bouton natif léger (aucune bibliothèque) pour garder les pages rapides. */
 export function ThemeToggle() {
-  const [dark, setDark] = useState(true);
-
-  useEffect(() => {
-    setDark(document.documentElement.classList.contains("dark"));
-  }, []);
+  const [dark, setDark] = useState<boolean>(() =>
+    typeof document === "undefined"
+      ? true
+      : document.documentElement.classList.contains("dark"),
+  );
 
   function toggle() {
     const next = !dark;
@@ -25,15 +24,14 @@ export function ThemeToggle() {
   }
 
   return (
-    <Button
+    <button
       type="button"
-      variant="ghost"
-      size="icon"
       onClick={toggle}
       aria-label={dark ? fr.app.themeToLight : fr.app.themeToDark}
       title={dark ? fr.app.themeToLight : fr.app.themeToDark}
+      className="inline-flex h-10 w-10 items-center justify-center rounded-xl text-foreground transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2"
     >
       {dark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-    </Button>
+    </button>
   );
 }

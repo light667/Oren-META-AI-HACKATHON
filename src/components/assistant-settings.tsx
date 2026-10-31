@@ -10,6 +10,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -27,6 +35,7 @@ export function AssistantSettings({
 }) {
   const router = useRouter();
   const [enabled, setEnabled] = useState(initialEnabled);
+  const [confirmCut, setConfirmCut] = useState(false);
   const [delay, setDelay] = useState(String(initialDelayMinutes));
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
@@ -88,9 +97,32 @@ export function AssistantSettings({
             id="assistant-toggle"
             checked={!enabled}
             disabled={!canEdit}
-            onCheckedChange={(cut) => toggle(!cut)}
+            onCheckedChange={(cut) => (cut ? setConfirmCut(true) : void toggle(true))}
           />
         </div>
+        <Dialog open={confirmCut} onOpenChange={setConfirmCut}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{fr.settings.cutConfirmTitle}</DialogTitle>
+              <DialogDescription>{fr.settings.cutConfirmBody}</DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setConfirmCut(false)}>
+                {fr.settings.cutCancel}
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={() => {
+                  setConfirmCut(false);
+                  void toggle(false);
+                }}
+              >
+                {fr.settings.cutConfirmOk}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         <form onSubmit={saveDelay} className="space-y-2">
           <Label htmlFor="alert-delay">{fr.settings.alertDelayLabel}</Label>
           <p className="text-xs text-muted-foreground">{fr.settings.alertDelayHelp}</p>

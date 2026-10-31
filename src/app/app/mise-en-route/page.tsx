@@ -14,5 +14,5 @@ export default async function SetupPage() {
       </div>
     );
   }
-  return <SetupWizard />;
+  return <SetupWizard slug={ctx.business.slug} />;
 }
