@@ -1,0 +1,22 @@
+{
+  "demoUrl": "http://localhost:3000",
+  "slug": "chez-chef-t",
+  "voiceSec": 19.5345,
+  "startedAt": "2026-11-02T00:31:00.554Z",
+  "marks": {
+    "s3-mise-en-route": {
+      "start": 9.075
+    },
+    "s3-vision-wait": {
+      "start": 13.362
+    }
+  },
+  "notes": [
+    "patron connecté (session réelle Supabase Auth)",
+    "scène 3 en échec : locator.waitFor: Timeout 240000ms exceeded."
+  ],
+  "videos": {
+    "owner": "C:\\Users\\netha\\Dev\\oren\\docs\\demo\\raw\\owner\\page@0c8d3041bf238750124efc84f8439bb2.webm",
+    "phone": "C:\\Users\\netha\\Dev\\oren\\docs\\demo\\raw\\phone\\page@02ec9a4a9ec32b828793813876a103b0.webm"
+  }
+}

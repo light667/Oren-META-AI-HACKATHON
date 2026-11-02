@@ -18,6 +18,7 @@ export default async function OrdersPage() {
     <OrdersBoard
       initialOrders={(data as OrderRow[] | null) ?? []}
       businessId={ctx?.businessId ?? ""}
+      slug={ctx?.business.slug ?? ""}
     />
   );
 }

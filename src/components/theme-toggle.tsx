@@ -1,37 +1,56 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
-import { fr } from "@/i18n/fr";
+import { useI18n } from "@/i18n/context";
 
-/** Bascule clair/sombre : préférence gardée dans le navigateur. Bouton natif léger (aucune bibliothèque) pour garder les pages rapides. */
-export function ThemeToggle() {
-  const [dark, setDark] = useState<boolean>(() =>
-    typeof document === "undefined"
-      ? true
-      : document.documentElement.classList.contains("dark"),
-  );
+/**
+ * Bascule clair / sombre moderne et accessible.
+ * Thème clair : Blanc + Vert (#0ebb7c).
+ * Thème sombre : Noir (#09090b) + Vert (#0ebb7c).
+ */
+export function ThemeToggle({ className = "" }: { className?: string }) {
+  const { t } = useI18n();
+  const [mounted, setMounted] = useState(false);
+  const [isDark, setIsDark] = useState<boolean>(true);
+
+  useEffect(() => {
+    setMounted(true);
+    setIsDark(document.documentElement.classList.contains("dark"));
+  }, []);
 
   function toggle() {
-    const next = !dark;
-    setDark(next);
+    const next = !isDark;
+    setIsDark(next);
     document.documentElement.classList.toggle("dark", next);
     try {
       window.localStorage.setItem("oren-theme", next ? "dark" : "light");
     } catch {
-      // Stockage indisponible : la bascule vaut pour cette page.
+      // ignore
     }
+  }
+
+  if (!mounted) {
+    return (
+      <div
+        className={`inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border/60 bg-secondary/50 text-muted-foreground ${className}`}
+      />
+    );
   }
 
   return (
     <button
       type="button"
       onClick={toggle}
-      aria-label={dark ? fr.app.themeToLight : fr.app.themeToDark}
-      title={dark ? fr.app.themeToLight : fr.app.themeToDark}
-      className="inline-flex h-10 w-10 items-center justify-center rounded-xl text-foreground transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2"
+      aria-label={isDark ? t.app.themeToLight : t.app.themeToDark}
+      title={isDark ? t.app.themeToLight : t.app.themeToDark}
+      className={`inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border/60 bg-secondary/60 text-foreground transition-all duration-200 hover:border-[#0ebb7c]/50 hover:bg-secondary hover:text-[#0ebb7c] active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 ${className}`}
     >
-      {dark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+      {isDark ? (
+        <Sun className="h-4 w-4 transition-transform duration-300 hover:rotate-45" />
+      ) : (
+        <Moon className="h-4 w-4 transition-transform duration-300 hover:-rotate-12" />
+      )}
     </button>
   );
 }

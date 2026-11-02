@@ -1,4 +1,4 @@
-﻿import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { fr } from "@/i18n/fr";
 import {
   chatRateLimitsFromEnv,
@@ -13,7 +13,7 @@ function at(second: number): number {
 }
 
 describe("limiteur des routes publiques de chat", () => {
-  it("laisse passer sous les limites, bloque la session au-delÃ  par minute", () => {
+  it("laisse passer sous les limites, bloque la session au-delà par minute", () => {
     const limiter = createChatRateLimiter(LIMITS);
     const key = { businessId: "b1", sessionId: "s1", ip: "1.2.3.4" };
     for (let i = 0; i < 3; i += 1) {
@@ -23,15 +23,15 @@ describe("limiteur des routes publiques de chat", () => {
     expect(blocked.allowed).toBe(false);
     expect(blocked.reason).toBe("session");
     expect(blocked.retryAfterSeconds).toBeGreaterThan(0);
-    // Une autre session de la mÃªme IP passe encore (limite IP = 5).
+    // Une autre session de la même IP passe encore (limite IP = 5).
     expect(
       limiter.check({ businessId: "b1", sessionId: "s2", ip: "1.2.3.4" }, at(4)).allowed,
     ).toBe(true);
   });
 
-  it("bloque l'adresse IP au-delÃ  de sa limite par minute", () => {
+  it("bloque l'adresse IP au-delà de sa limite par minute", () => {
     const limiter = createChatRateLimiter(LIMITS);
-    // Entreprise diffÃ©rente Ã  chaque fois : seule la limite IP peut bloquer.
+    // Entreprise différente à chaque fois : seule la limite IP peut bloquer.
     for (let i = 0; i < 5; i += 1) {
       expect(
         limiter.check({ businessId: `b-ip-${i}`, sessionId: `s${i}`, ip: "9.9.9.9" }, at(i))
@@ -62,14 +62,14 @@ describe("limiteur des routes publiques de chat", () => {
     );
     expect(blocked.allowed).toBe(false);
     expect(blocked.reason).toBe("business_daily");
-    // Une autre entreprise n'est pas affectÃ©e.
+    // Une autre entreprise n'est pas affectée.
     expect(
       limiter.check({ businessId: "b-other", sessionId: "s1", ip: "10.9.9.9" }, at(4 * 61))
         .allowed,
     ).toBe(true);
   });
 
-  it("la fenÃªtre d'une minute glisse : on repasse aprÃ¨s expiration", () => {
+  it("la fenêtre d'une minute glisse : on repasse après expiration", () => {
     const limiter = createChatRateLimiter(LIMITS);
     const key = { businessId: "b1", sessionId: "s1", ip: "1.1.1.1" };
     for (let i = 0; i < 3; i += 1) limiter.check(key, at(i));
@@ -77,7 +77,7 @@ describe("limiteur des routes publiques de chat", () => {
     expect(limiter.check(key, at(61)).allowed).toBe(true);
   });
 
-  it("les limites viennent des variables d'environnement, avec des replis sÃ»rs", () => {
+  it("les limites viennent des variables d'environnement, avec des replis sûrs", () => {
     expect(
       chatRateLimitsFromEnv({
         CHAT_RATE_LIMIT_PER_MINUTE_SESSION: "7",
@@ -95,7 +95,7 @@ describe("limiteur des routes publiques de chat", () => {
     expect(fallback.perDayBusiness).toBeGreaterThan(0);
   });
 
-  it("le message de refus est en franÃ§ais et explique l'attente", () => {
+  it("le message de refus est en français et explique l'attente", () => {
     for (const reason of ["session", "ip", "business_daily"] as const) {
       const message = rateLimitMessage(reason, fr.chat);
       expect(message.length).toBeGreaterThan(20);

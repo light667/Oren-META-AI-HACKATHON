@@ -15,6 +15,13 @@ export const fr = {
     tagline: "Assistant IA pour les petites entreprises",
     description:
       "Un assistant qui répond à vos clients en français et agit : commandes, passage à un humain, et plus.",
+    seo: {
+      title: "Oren - Assistant IA pour restaurants et petites entreprises au Togo",
+      description:
+        "Oren répond à vos clients en français, prend leurs commandes et vous passe la main. Prêt en moins d'une heure depuis une photo de votre menu. Prix en FCFA, pensé pour Lomé et le Togo.",
+      keywords:
+        "assistant IA restaurant, commande en ligne Lomé, Togo, menu QR code, assistant WhatsApp restaurant, petites entreprises Afrique francophone",
+    },
   },
   home: {
     heading: "Bienvenue chez",
@@ -28,7 +35,7 @@ export const fr = {
     aiNotice: "Vos clients savent qu'ils parlent à un assistant IA et peuvent demander un humain à tout moment.",
     heroTitle: "Votre assistant qui répond, commande et vous passe la main.",
     promise:
-      "Un assistant qui répond à vos clients en français, jour et nuit — et qui agit : il prend la commande, la transmet à votre cuisine, et vous passe la main dès qu'un humain vaut mieux.",
+      "Un assistant qui répond à vos clients en français, jour et nuit - et qui agit : il prend la commande, la transmet à votre cuisine, et vous passe la main dès qu'un humain vaut mieux.",
     demoCta: "Essayer l'assistant de démonstration",
     demoSlug: "chez-chef-t",
     demoNote:
@@ -329,6 +336,13 @@ export const fr = {
     rateLimitedSession: "Vous envoyez des messages très vite. Patientez une petite minute, puis réessayez.",
     rateLimitedIp: "Trop de messages arrivent depuis cette connexion. Patientez une petite minute, puis réessayez.",
     rateLimitedBusiness: "Le restaurant a reçu beaucoup de messages aujourd'hui et l'assistant fait une pause. Réessayez demain, ou écrivez directement au restaurant.",
+    rateLimitBlocked: "Trop de messages pour le moment. Patientez une petite minute, puis réessayez.",
+  },
+  orderSteps: {
+    received: "Reçue",
+    preparing: "En préparation",
+    ready: "Prête",
+    delivered: "Livrée",
   },
   setup: {
     stepImport: "1. Importer",
@@ -340,10 +354,13 @@ export const fr = {
     intro: "Envoyez la photo de votre menu et dictez vos horaires : l'assistant prépare un brouillon. Rien n'est publié tant que vous n'avez pas vérifié et cliqué sur Publier.",
     photoTitle: "1. Photo du menu",
     photoHelp: "Une photo nette de votre menu papier. Les plats et prix lus seront à vérifier.",
-    photoButton: "Choisir une photo",
+    photoButton: "Prendre ou choisir une photo",
     photoAnalyze: "Lire la photo",
+    photoAnalyzing: "Analyse du menu par l'IA en cours…",
+    retry: "Réessayer",
     voiceTitle: "2. Message vocal",
     voiceHelp: "Dictez vos horaires, vos zones de livraison et vos règles (ex. paiement, réservations de groupe).",
+    voiceAnalyzing: "Transcription et extraction par l'IA en cours…",
     recordStart: "Enregistrer",
     recordStop: "Arrêter",
     recording: "Enregistrement en cours…",
@@ -481,7 +498,7 @@ export const fr = {
     finalTitle: "Prêt à ne plus rater de commande ?",
     finalBody: "Créez votre assistant, photographiez votre menu, et recevez votre première commande aujourd'hui.",
     footerContact: "Nous écrire sur WhatsApp",
-    footerRights: "Assistant IA pour les petites entreprises — Lomé, Togo.",
+    footerRights: "Assistant IA pour les petites entreprises - Lomé, Togo.",
     demoPhone: {
       business: "Chez Chef T",
       open: "Ouvert",

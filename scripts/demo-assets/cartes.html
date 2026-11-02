@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Oren — cartes vidéo</title>
+<style>
+  /* Couleurs docs/DESIGN.md : fond clair #FBF8F3, texte #1C1917, sombre #11100E, vert marque #0ebb7c, orange #C2410C */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+  body { font-family: Inter, -apple-system, "Segoe UI", sans-serif; background: #FBF8F3; color: #1C1917; }
+  .card { width: 1920px; height: 1080px; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 90px 140px; text-align: center; }
+  .card.active { display: flex; }
+  .kicker { font-size: 30px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: #0ebb7c; margin-bottom: 34px; }
+  h1 { font-size: 76px; line-height: 1.18; font-weight: 800; max-width: 1300px; }
+  h2 { font-size: 64px; line-height: 1.2; font-weight: 800; max-width: 1280px; }
+  .sub { margin-top: 36px; font-size: 34px; line-height: 1.45; color: #6B645C; max-width: 1150px; }
+  .mark { margin-bottom: 44px; }
+  .dark { background: #11100E; color: #F5F2EC; }
+  .dark .sub { color: #A59E94; }
+  .archi { display: flex; align-items: stretch; gap: 26px; margin-top: 62px; }
+  .box { border: 2px solid #E7DFD2; background: #FFFFFF; border-radius: 20px; padding: 30px 34px; min-width: 300px; }
+  .box b { display: block; font-size: 31px; margin-bottom: 10px; }
+  .box span { font-size: 24px; color: #6B645C; line-height: 1.4; display: block; }
+  .arrow { align-self: center; font-size: 44px; color: #C2410C; font-weight: 800; }
+  .big { font-size: 92px; font-weight: 800; color: #0ebb7c; }
+  .url { margin-top: 26px; font-size: 36px; font-weight: 700; color: #F5F2EC; }
+  .repo { margin-top: 10px; font-size: 28px; color: #A59E94; }
+</style>
+</head>
+<body>
+
+<!-- Scène 1 : problème -->
+<section class="card active" data-card="probleme">
+  <div class="kicker">Lomé, Togo</div>
+  <h1>À Lomé, chaque commande se prend à la main.</h1>
+  <p class="sub">In Lomé, every order is taken by hand.</p>
+</section>
+
+<!-- Scène 6a : architecture -->
+<section class="card" data-card="archi">
+  <h2>How Oren is built</h2>
+  <div class="archi">
+    <div class="box"><b>Customer</b><span>Web chat<br>link or QR code</span></div>
+    <div class="arrow">→</div>
+    <div class="box"><b>Assistant core</b><span>Code decides prices,<br>totals and statuses</span></div>
+    <div class="arrow">→</div>
+    <div class="box"><b>Meta models</b><span>Muse Spark · Muse Voice<br>vision, chat, transcription</span></div>
+    <div class="arrow">→</div>
+    <div class="box"><b>Your business data</b><span>Menu, hours, zones<br>isolated per business</span></div>
+  </div>
+</section>
+
+<!-- Scène 6b : évaluation -->
+<section class="card" data-card="eval">
+  <div class="kicker">Reference evaluation</div>
+  <div class="big">30/30</div>
+  <h2 style="margin-top:26px">Évaluation : 30/30 sur notre jeu de référence</h2>
+  <p class="sub">Scored by code, never by the model. eval/questions.json</p>
+</section>
+
+<!-- Scène 6c : isolation -->
+<section class="card" data-card="isolation">
+  <div class="kicker">Tested safety</div>
+  <h2>Isolation entre entreprises testée</h2>
+  <p class="sub">Each business only ever sees its own data. tests/db/isolation.test.ts</p>
+</section>
+
+<!-- Scène 7 : fin -->
+<section class="card dark" data-card="fin">
+  <div class="mark" id="fin-mark"></div>
+  <h2>Restaurants today. Hotels, salons, schools next.<br>Mobile Money and messaging channels coming.</h2>
+  <p class="url" id="fin-url"></p>
+  <p class="repo" id="fin-repo"></p>
+</section>
+
+<script>
+  // Affiche une seule carte : ?carte=probleme|archi|eval|isolation|fin
+  const params = new URLSearchParams(location.search);
+  const name = params.get("carte") || "probleme";
+  document.querySelectorAll(".card").forEach((el) => {
+    el.classList.toggle("active", el.dataset.card === name);
+  });
+  // Logo « briques » (même géométrie que src/components/logo.tsx), vert marque.
+  document.getElementById("fin-mark").innerHTML =
+    '<svg viewBox="0 0 72 48" width="150" height="100" fill="#0ebb7c"><rect x="15" y="1" width="19" height="12" rx="4"/><rect x="38" y="1" width="19" height="12" rx="4"/><rect x="8" y="17" width="27" height="12" rx="4"/><rect x="39" y="17" width="27" height="12" rx="4"/><rect x="1" y="33" width="19" height="12" rx="4"/><rect x="24" y="33" width="31" height="12" rx="4"/><rect x="59" y="33" width="12" height="12" rx="4"/></svg>' +
+    '<div style="font-size:64px;font-weight:800;color:#F5F2EC;margin-top:18px">oren</div>';
+  document.getElementById("fin-url").textContent = params.get("site") || "";
+  document.getElementById("fin-repo").textContent = params.get("repo") || "";
+</script>
+</body>
+</html>

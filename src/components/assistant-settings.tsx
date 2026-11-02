@@ -4,13 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -21,7 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { fr } from "@/i18n/fr";
+import { useI18n } from "@/i18n/context";
+import { Bot, Power, Clock, Check, AlertCircle } from "lucide-react";
 
 /** Coupe-assistant entreprise + délai d'alerte e-mail (owner uniquement). */
 export function AssistantSettings({
@@ -34,6 +28,8 @@ export function AssistantSettings({
   canEdit: boolean;
 }) {
   const router = useRouter();
+  const { t } = useI18n();
+
   const [enabled, setEnabled] = useState(initialEnabled);
   const [confirmCut, setConfirmCut] = useState(false);
   const [delay, setDelay] = useState(String(initialDelayMinutes));
@@ -47,7 +43,7 @@ export function AssistantSettings({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
-    if (!response.ok) throw new Error(fr.common.error);
+    if (!response.ok) throw new Error(t.common.error);
   }
 
   async function toggle(value: boolean) {
@@ -58,7 +54,7 @@ export function AssistantSettings({
       router.refresh();
     } catch (err) {
       setEnabled(!value);
-      setError(err instanceof Error ? err.message : fr.common.error);
+      setError(err instanceof Error ? err.message : t.common.error);
     }
   }
 
@@ -66,7 +62,7 @@ export function AssistantSettings({
     event.preventDefault();
     const minutes = Number(delay);
     if (!Number.isInteger(minutes) || minutes < 1 || minutes > 120) {
-      setError(fr.common.error);
+      setError(t.common.error);
       return;
     }
     setBusy(true);
@@ -77,73 +73,135 @@ export function AssistantSettings({
       setSaved(true);
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : fr.common.error);
+      setError(err instanceof Error ? err.message : t.common.error);
     } finally {
       setBusy(false);
     }
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{fr.settings.assistantTitle}</CardTitle>
-        <CardDescription>{enabled ? fr.settings.assistantOn : fr.settings.assistantOff}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-5">
-        {error && <p className="text-sm text-destructive">{error}</p>}
-        <div className="flex items-center justify-between gap-4">
-          <Label htmlFor="assistant-toggle">{fr.settings.assistantToggle}</Label>
-          <Switch
-            id="assistant-toggle"
-            checked={!enabled}
-            disabled={!canEdit}
-            onCheckedChange={(cut) => (cut ? setConfirmCut(true) : void toggle(true))}
-          />
-        </div>
-        <Dialog open={confirmCut} onOpenChange={setConfirmCut}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{fr.settings.cutConfirmTitle}</DialogTitle>
-              <DialogDescription>{fr.settings.cutConfirmBody}</DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setConfirmCut(false)}>
-                {fr.settings.cutCancel}
-              </Button>
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={() => {
-                  setConfirmCut(false);
-                  void toggle(false);
-                }}
-              >
-                {fr.settings.cutConfirmOk}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-        <form onSubmit={saveDelay} className="space-y-2">
-          <Label htmlFor="alert-delay">{fr.settings.alertDelayLabel}</Label>
-          <p className="text-xs text-muted-foreground">{fr.settings.alertDelayHelp}</p>
-          <div className="flex items-center gap-3">
-            <Input
-              id="alert-delay"
-              inputMode="numeric"
-              className="w-24"
-              value={delay}
-              disabled={!canEdit}
-              onChange={(e) => setDelay(e.target.value)}
-            />
-            {canEdit && (
-              <Button type="submit" disabled={busy} size="sm">
-                {busy ? fr.common.saving : fr.common.save}
-              </Button>
-            )}
-            {saved && <span className="text-sm text-muted-foreground">{fr.settings.saved}</span>}
+    <div className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8 space-y-6 shadow-xs">
+      <div className="flex items-start justify-between gap-4 border-b border-border/60 pb-5">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0ebb7c]/10 text-[#0ebb7c]">
+            <Bot className="h-5 w-5" />
           </div>
+          <div>
+            <h2 className="font-heading text-lg font-bold text-foreground">
+              {t.settings.assistantTitle}
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              {enabled ? t.settings.assistantOn : t.settings.assistantOff}
+            </p>
+          </div>
+        </div>
+
+        <span
+          className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
+            enabled
+              ? "bg-[#0ebb7c]/15 text-[#0ebb7c]"
+              : "bg-destructive/15 text-destructive"
+          }`}
+        >
+          <span className={`h-1.5 w-1.5 rounded-full ${enabled ? "bg-[#0ebb7c] animate-pulse" : "bg-destructive"}`} />
+          <span>{enabled ? "Actif" : "Coupé"}</span>
+        </span>
+      </div>
+
+      {error && (
+        <div className="flex items-center gap-2 rounded-xl bg-destructive/10 p-3 text-xs text-destructive">
+          <AlertCircle className="h-4 w-4 shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
+
+      {/* Interrupteur Couper l'assistant */}
+      <div className="flex items-center justify-between gap-4 rounded-2xl border border-border/60 bg-secondary/30 p-4">
+        <div className="space-y-0.5">
+          <Label htmlFor="assistant-toggle" className="text-sm font-semibold text-foreground cursor-pointer">
+            {t.settings.assistantToggle}
+          </Label>
+          <p className="text-xs text-muted-foreground">
+            Basculez pour suspendre les réponses IA et forcer la reprise humaine.
+          </p>
+        </div>
+
+        <Switch
+          id="assistant-toggle"
+          checked={!enabled}
+          disabled={!canEdit}
+          onCheckedChange={(cut) => (cut ? setConfirmCut(true) : void toggle(true))}
+        />
+      </div>
+
+      {/* Formulaire délai d'alerte de secours */}
+      {canEdit && (
+        <form onSubmit={saveDelay} className="space-y-3 pt-2 border-t border-border/50">
+          <div className="space-y-1.5">
+            <Label htmlFor="alert-delay" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              {t.settings.alertDelayLabel}
+            </Label>
+            <div className="flex max-w-xs gap-2">
+              <Input
+                id="alert-delay"
+                type="number"
+                min={1}
+                max={120}
+                value={delay}
+                onChange={(e) => setDelay(e.target.value)}
+                className="h-10 rounded-xl"
+              />
+              <Button
+                type="submit"
+                disabled={busy}
+                className="h-10 rounded-xl bg-[#0ebb7c] text-xs font-bold text-white hover:bg-[#0ca66e]"
+              >
+                {busy ? t.common.saving : t.common.save}
+              </Button>
+            </div>
+            <p className="text-[11px] text-muted-foreground">{t.settings.alertDelayHelp}</p>
+          </div>
+          {saved && (
+            <p className="flex items-center gap-1 text-xs text-[#0ebb7c] font-semibold">
+              <Check className="h-3.5 w-3.5" />
+              <span>{t.settings.saved}</span>
+            </p>
+          )}
         </form>
-      </CardContent>
-    </Card>
+      )}
+
+      {/* Confirmation de coupure */}
+      <Dialog open={confirmCut} onOpenChange={setConfirmCut}>
+        <DialogContent className="rounded-3xl border-border/80">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold">{t.settings.cutConfirmTitle}</DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground leading-relaxed pt-1">
+              {t.settings.cutConfirmBody}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setConfirmCut(false)}
+              className="rounded-xl text-xs"
+            >
+              {t.settings.cutCancel}
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={() => {
+                setConfirmCut(false);
+                void toggle(false);
+              }}
+              className="rounded-xl text-xs font-bold"
+            >
+              {t.settings.cutConfirmOk}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }

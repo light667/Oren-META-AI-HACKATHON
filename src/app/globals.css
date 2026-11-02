@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
@@ -50,10 +49,13 @@
   --radius-4xl: calc(var(--radius) * 2.6);
   --shadow-soft: 0 1px 2px rgb(28 25 23 / 0.05), 0 8px 24px -12px rgb(28 25 23 / 0.18);
   --shadow-lift: 0 2px 4px rgb(28 25 23 / 0.06), 0 16px 40px -16px rgb(28 25 23 / 0.28);
+  --shadow-glow: 0 0 25px -5px rgba(249, 115, 22, 0.35);
 }
 
-/* Palette docs/DESIGN.md — clair */
+/* Palette docs/DESIGN.md & Tâche D5 — Mode Clair */
 :root {
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: "Bricolage Grotesque", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   --background: #fbf8f3;
   --foreground: #1c1917;
   --card: #ffffff;
@@ -90,7 +92,7 @@
   --sidebar-ring: #c2410c;
 }
 
-/* Palette docs/DESIGN.md — sombre */
+/* Palette docs/DESIGN.md & Tâche D5 — Mode Sombre */
 .dark {
   --background: #11100e;
   --foreground: #f5f2ec;
@@ -99,7 +101,7 @@
   --popover: #1a1816;
   --popover-foreground: #f5f2ec;
   --primary: #f97316;
-  --primary-foreground: #1c1005;
+  --primary-foreground: #11100e;
   --secondary: #262320;
   --secondary-foreground: #f5f2ec;
   --muted: #262320;
@@ -120,30 +122,55 @@
   --sidebar: #1a1816;
   --sidebar-foreground: #f5f2ec;
   --sidebar-primary: #f97316;
-  --sidebar-primary-foreground: #1c1005;
+  --sidebar-primary-foreground: #11100e;
   --sidebar-accent: #262320;
   --sidebar-accent-foreground: #f5f2ec;
   --sidebar-border: #2e2a26;
   --sidebar-ring: #f97316;
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-sans;
-    scroll-behavior: smooth;
-  }
-  h1, h2, h3 {
-    font-family: var(--font-heading), var(--font-sans), sans-serif;
-  }
+* {
+  border-color: var(--border);
 }
 
-/* Apparition douce des messages et cartes (DESIGN.md : 150-250 ms). */
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+html {
+  font-family: var(--font-sans);
+  scroll-behavior: smooth;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+}
+
+/* Styles et effets American Startup / YC Modern */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+}
+
+.dark .glass-panel {
+  background: rgba(26, 24, 22, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+}
+
+.glow-orange {
+  box-shadow: 0 0 35px -5px rgba(249, 115, 22, 0.35);
+}
+
+.glow-orange-sm {
+  box-shadow: 0 0 15px -3px rgba(249, 115, 22, 0.25);
+}
+
+/* Apparition douce des messages et cartes (DESIGN.md : 150-250 ms) */
 @keyframes oren-rise {
   from {
     opacity: 0;
@@ -155,31 +182,37 @@
   }
 }
 
-.oren-rise {
-  animation: oren-rise 220ms ease-out both;
+.animate-oren-rise {
+  animation: oren-rise 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-@keyframes oren-typing {
-  0%, 60%, 100% {
-    transform: translateY(0);
-    opacity: 0.35;
+/* Indicateur de saisie "en train d'écrire" */
+@keyframes oren-bounce {
+  0%, 80%, 100% {
+    transform: scale(0.6);
+    opacity: 0.4;
   }
-  30% {
-    transform: translateY(-3px);
+  40% {
+    transform: scale(1);
     opacity: 1;
   }
 }
 
-.oren-typing-dot {
-  animation: oren-typing 1.2s ease-in-out infinite;
+.animate-oren-dot-1 {
+  animation: oren-bounce 1.2s infinite ease-in-out;
+}
+.animate-oren-dot-2 {
+  animation: oren-bounce 1.2s infinite ease-in-out 0.2s;
+}
+.animate-oren-dot-3 {
+  animation: oren-bounce 1.2s infinite ease-in-out 0.4s;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .oren-rise,
-  .oren-typing-dot {
-    animation: none;
-  }
-  html {
-    scroll-behavior: auto;
-  }
+/* Barre de défilement discrète */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

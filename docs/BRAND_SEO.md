@@ -1,0 +1,7 @@
+# Marque et SEO
+
+Logo retravaillé depuis `public/logo.png` (script Python, détourage par distance au fond, composantes détectées) : le **symbole** seul (pyramide de briques) sert aux endroits compacts — en-tête du chat, « Propulsé par », QR, téléphone de démo, favicon et icônes d'app — et le **logo complet** (symbole + « Oren ») aux en-têtes, pieds et pages d'accès, via `src/components/logo.tsx`.
+Fond retiré : `public/brand/symbol|logo-light.png` (blanc + vert, fonds sombres) et `symbol|logo-dark.png` (noir chaud + vert, fonds clairs), choisies par le thème ; un fragment de brique coupé en haut de la source a été exclu du cadrage. Icônes nettes redessinées depuis les boîtes de briques : `public/icons/icon-192|512.png`, `apple-touch-icon.png`, `src/app/icon.png` ; le favicon par défaut de Next et ses SVG d'échafaudage ont été supprimés.
+SEO : titre/description/mots-clés dans `fr.app.seo` (et `en`), Open Graph et Twitter avec `public/og.png` (1200×630, logo sur fond sombre), JSON-LD SoftwareApplication honnête sur l'accueil, `src/app/sitemap.ts` (accueil, démo, inscription, connexion), `src/app/robots.ts` (espace patron et API exclus), canonique et `NEXT_PUBLIC_SITE_URL` (à renseigner en production, voir `.env.example`).
+Vérifié en réel : `/sitemap.xml`, `/robots.txt`, `/og.png`, variantes de logo et icônes servent en 200 ; liens `rel=icon` 192/512 présents dans le HTML ; aucune référence `next.svg`.
+Reste marketing : renseigner le vrai domaine dans `NEXT_PUBLIC_SITE_URL` après déploiement, puis soumettre le sitemap à Google Search Console.

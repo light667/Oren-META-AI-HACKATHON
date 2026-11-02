@@ -17,7 +17,7 @@ on conflict (id) do nothing;
 insert into public.business_info (business_id, opening_hours, address, rules, free_text)
 values (
   'd0000000-0000-4000-8000-000000000001',
-  '{"lundi": "10h-22h", "mardi": "10h-22h", "mercredi": "10h-22h", "jeudi": "10h-22h", "vendredi": "10h-23h", "samedi": "10h-23h", "dimanche": "fermé"}'::jsonb,
+  '{"lundi": "24h/24", "mardi": "24h/24", "mercredi": "24h/24", "jeudi": "24h/24", "vendredi": "24h/24", "samedi": "24h/24", "dimanche": "24h/24"}'::jsonb,
   'Agoè Zilon, derrière l''école Mariam, Lomé (Togo)',
   'Paiement à la livraison ou sur place. Aucune commande sans confirmation explicite du client.',
   'Restaurant de démonstration pour le hackathon. Cuisine locale : attiéké, riz au gras, frites, alloco.'
