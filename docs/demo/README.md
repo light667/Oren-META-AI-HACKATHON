@@ -26,6 +26,8 @@ Chaque scène se teste séparément, sans rejouer tout le parcours :
 
 ```powershell
 npx tsx scripts/demo-record.ts --scene 3
+npx tsx scripts/demo-record.ts --scene 4,5   # paire cliente + patron
+npx tsx scripts/demo-record.ts --cartes     # cartes seules (aucun appel API)
 ```
 
 Ordre de dépendance entre scènes : 3 (publication du menu) → 4 (commande

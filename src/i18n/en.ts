@@ -397,7 +397,25 @@ export const en = {
     heroPromise: "Your assistant answers customers and takes orders, 24 hours a day, 7 days a week.",
     heroSub:
       "Live in under an hour, in French and English, from a simple photo of your menu. Your customers order from a web link or QR code - no app download required.",
+    setup45Title: "From a photo of your paper menu to a restaurant online in 45 seconds",
+    setup45Sub:
+      "Snap your menu, dictate your rules by voice. The AI extracts, structures and prepares your catalog with no tedious typing.",
+    setupCards: [
+      {
+        title: "1. Photo vision",
+        body: "The model reads your restaurant's physical menu: dish names, categories and prices in FCFA. Ambiguities are flagged for your review.",
+      },
+      {
+        title: "2. Natural voice note",
+        body: "Dictate your hours and delivery neighborhoods (Agoè, Bè, Tokoin...). Audio transcription extracts your real settings precisely.",
+      },
+      {
+        title: "3. Ready to sell: 45.8s",
+        body: "You review every line at a glance, click Publish, and immediately share your QR code and link with your customers.",
+      },
+    ],
     howTitle: "How it works",
+    howSub: "A smooth 3-step experience, for the merchant and the customer alike.",
     steps: [
       {
         title: "Snap your menu",
@@ -413,6 +431,8 @@ export const en = {
       },
     ],
     benefitsTitle: "Why merchants love it",
+    benefitsSub:
+      "Robust technology designed specifically for the realities of commerce in French-speaking Africa.",
     benefits: [
       {
         title: "Never miss an order again",
@@ -447,6 +467,7 @@ export const en = {
       },
     ],
     audienceTitle: "Who is it for?",
+    audienceSub: "A multi-business architecture ready for every service trade.",
     audience: [
       { name: "Restaurants & Bars", status: "Available now" },
       { name: "Hotels & Guesthouses", status: "Coming soon" },
@@ -456,6 +477,7 @@ export const en = {
     availableNow: "Available now",
     comingSoon: "Coming soon",
     faqTitle: "Frequently asked questions",
+    faqSub: "Clear, transparent answers on how Oren works.",
     faq: [
       {
         q: "How much does it cost?",

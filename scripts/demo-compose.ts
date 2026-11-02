@@ -21,11 +21,12 @@ const DEMO_DIR = resolve("docs/demo");
 const RAW = join(DEMO_DIR, "raw");
 const WORK = join(DEMO_DIR, "work");
 const W = 1920, H = 1080, FPS = 30;
-const FONT = "C\\:/Windows/Fonts/arial.ttf";
+const FONT = "'C\\:/Windows/Fonts/arial.ttf'";
 
 interface Mark { ctx: string; start: number; end: number }
 interface Timeline {
   marks: Record<string, Mark>; notes: string[]; voiceSec: number;
+  videoStartOffsetSec?: number;
   videos: { owner: string | null; phone: string | null };
 }
 
@@ -45,9 +46,26 @@ function srtTime(sec: number): string {
 interface Seg { sceneId: string; file: string; dur: number }
 
 async function main() {
-  const timeline = JSON.parse(readFileSync(join(RAW, "timeline.json"), "utf8")) as Timeline;
-  const marks = timeline.marks;
-  const ownerVid = timeline.videos.owner, phoneVid = timeline.videos.phone;
+  const loadTimeline = (path: string) => {
+    const tl = JSON.parse(readFileSync(path, "utf8")) as Timeline;
+    const off = tl.videoStartOffsetSec ?? 0;
+    const normalized: Record<string, Mark> = {};
+    for (const [name, m] of Object.entries(tl.marks)) {
+      normalized[name] = { ...m, start: Math.max(0, m.start - off), end: Math.max(0, m.end - off) };
+    }
+    return { tl, marks: normalized, ownerVid: tl.videos.owner, phoneVid: tl.videos.phone };
+  };
+  // Base : prise complète. La scène 5 peut venir d'une reprise dédiée (4+5)
+  // si sa timeline propre existe — les autres scènes restent celles de la prise.
+  const take3Path = join(RAW, "timeline-take3.json");
+  const pairPath = join(RAW, "timeline.json");
+  const base = loadTimeline(existsSync(take3Path) ? take3Path : pairPath);
+  const pair = existsSync(take3Path) && existsSync(pairPath) ? loadTimeline(pairPath) : null;
+  const cartesPath = join(RAW, "cartes", "timeline.json");
+  const cartes = existsSync(cartesPath) ? loadTimeline(cartesPath) : null;
+  const timeline = base.tl;
+  const marks = base.marks;
+  const ownerVid = base.ownerVid, phoneVid = base.phoneVid;
   if (!ownerVid || !phoneVid) throw new Error("Vidéos brutes introuvables (lancez demo-record.ts)");
   mkdirSync(WORK, { recursive: true });
 
@@ -69,17 +87,19 @@ async function main() {
 
   console.log("▶ découpage des segments…");
 
-  // S1 — carte problème (cible exacte 15 s).
+  // S1 — carte problème (9 s à l'écran, lisible).
   {
-    const m = need("s1-probleme");
-    const d = Math.min(m.end - m.start, 15);
-    await add("s1-probleme", "s1", ["-ss", String(m.start), "-i", ownerVid, "-t", String(d),
+    const cm = cartes?.marks["cartes-probleme"];
+    const m = cm && typeof cm.end === "number" ? cm : need("s1-probleme");
+    const src = cm && typeof cm.end === "number" ? (cartes!.ownerVid as string) : ownerVid;
+    const d = Math.min(m.end - m.start, 9);
+    await add("s1-probleme", "s1", ["-ss", String(m.start), "-i", src, "-t", String(d),
       "-vf", `scale=${W}:${H},${fade(d)}`]);
   }
-  // S2 — page d'accueil réelle (plafond 15 s).
+  // S2 — page d'accueil réelle (plafond 8 s).
   {
     const m = need("s2-promesse");
-    const d = Math.min(m.end - m.start, 15);
+    const d = Math.min(m.end - m.start, 8);
     await add("s2-promesse", "s2", ["-ss", String(m.start), "-i", ownerVid, "-t", String(d),
       "-vf", `scale=${W}:${H},${fade(d)}`]);
   }
@@ -106,7 +126,7 @@ async function main() {
     const pushFast = async (s: number, e: number) => {
       if (e - s < 0.4) return;
       const out = join(WORK, `s3-p${idx++}.mp4`);
-      const counter = `drawtext=fontfile=${FONT}:text='Real time: %{eif\\:t*${SPEED.toFixed(1)}\\:d} s':fontcolor=white:fontsize=34:box=1:boxcolor=black@0.55:boxborderw=12:x=w-text_w-40:y=40`;
+      const counter = `drawtext=fontfile=${FONT}:text='Real time %{eif\\:t*${SPEED.toFixed(1)}\\:d} s':fontcolor=white:fontsize=34:box=1:boxcolor=black@0.55:boxborderw=12:x=w-text_w-40:y=40`;
       await ff(["-ss", String(s), "-i", ownerVid, "-t", String(e - s),
         "-vf", `setpts=PTS/${SPEED.toFixed(2)},fps=${FPS},scale=${W}:${H},${counter},${caption}`,
         "-c:v", "libx264", "-pix_fmt", "yuv420p", "-r", String(FPS), "-an", out]);
@@ -120,13 +140,19 @@ async function main() {
     const joined = join(WORK, "s3-joined.mp4");
     await ff(["-f", "concat", "-safe", "0", "-i", listFile, "-c", "copy", joined]);
     const d3 = await probeDur(joined);
-    await add("s3-mise-en-route", "s3", ["-i", joined, "-vf", fade(d3)]);
-    console.log(`  (scène 3 : attentes x${SPEED.toFixed(1)} avec compteur de temps réel)`);
+    // Si la scène dépasse la cible (35 s), accélération globale douce du
+    // montage (les compteurs incrustés continuent d'afficher le temps réel).
+    const TARGET3 = 28;
+    const vf3 = d3 > TARGET3
+      ? `setpts=PTS/${(d3 / TARGET3).toFixed(3)},fps=${FPS},${fade(TARGET3)}`
+      : fade(d3);
+    await add("s3-mise-en-route", "s3", ["-i", joined, "-vf", vf3]);
+    console.log(`  (scène 3 : attentes x${SPEED.toFixed(1)} avec compteur de temps réel${d3 > TARGET3 ? `, ensemble ramené à ${TARGET3} s` : ""})`);
   }
   // S4 — lien/QR (3 s, ordinateur) puis téléphone en plan continu, cadré.
   {
     const lien = need("s4-lien");
-    const dLien = Math.min(lien.end - lien.start, 3.5);
+    const dLien = Math.min(lien.end - lien.start, 2.5);
     await add("s4-client", "s4a", ["-ss", String(lien.start), "-i", ownerVid, "-t", String(dLien),
       "-vf", `scale=${W}:${H},${fade(dLien)}`]);
     const m = need("s4-client");
@@ -137,12 +163,13 @@ async function main() {
   }
   // S5 — patron plein écran + suivi téléphone en incrustation (même horloge).
   {
-    const m = need("s5-patron");
-    const d = m.end - m.start;
+    const fromPair = pair && typeof pair.marks["s5-patron"]?.end === "number";
+    const m = fromPair ? pair.marks["s5-patron"] : need("s5-patron");
+    const d = Math.max(18, m.end - m.start - 5);
     const out = join(WORK, "s5.mp4");
-    await ff(["-ss", String(m.start), "-i", ownerVid, "-ss", String(m.start), "-i", phoneVid, "-t", String(d),
-      "-filter_complex", `[1:v]scale=360:780[pip];[0:v]scale=${W}:${H}[bg];[bg][pip]overlay=W-w-48:(H-h)/2,${fade(d)}`,
-      "-c:v", "libx264", "-pix_fmt", "yuv420p", "-r", String(FPS), "-an", out]);
+    await ff(["-ss", String(m.start), "-i", fromPair ? (pair.ownerVid as string) : ownerVid, "-ss", String(m.start), "-i", fromPair ? (pair.phoneVid as string) : phoneVid, "-t", String(d),
+      "-filter_complex", `[1:v]scale=360:780[pip];[0:v]scale=${W}:${H}[bg];[bg][pip]overlay=W-w-48:(H-h)/2,${fade(d)}[v]`,
+      "-map", "[v]", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-r", String(FPS), "-an", out]);
     const dur = await probeDur(out);
     segs.push({ sceneId: "s5-patron", file: out, dur });
     console.log(`  segment s5 : ${dur.toFixed(1)} s`);
@@ -150,22 +177,34 @@ async function main() {
   // S6 — injection (téléphone cadré) puis cartes archi / éval / isolation.
   {
     const m = need("s6-injection");
-    const d = m.end - m.start;
-    await add("s6-fiable", "s6a", ["-ss", String(m.start), "-i", phoneVid, "-t", String(d),
+    const resp = marks["s6-response"];
+    // Fenêtre resserrée autour de l'échange : frappe, envoi, refus complet.
+    const startAt = resp?.start ? Math.max(m.start, resp.start - 9) : m.start;
+    const endAt = resp?.end ? Math.min(m.end, resp.end + 2) : m.end;
+    const d = endAt - startAt;
+    await add("s6-fiable", "s6a", ["-ss", String(startAt), "-i", phoneVid, "-t", String(d),
       "-vf", `scale=470:1018,pad=${W}:${H}:(ow-iw)/2:(oh-ih)/2:#11100E,${fade(d)}`]);
-    const cards: Array<[string, string, number]> = [["s6-archi", "s6b", 5], ["s6-eval", "s6c", 4], ["s6-isolation", "s6d", 4]];
-    for (const [markName, segName, cap] of cards) {
-      const cm = need(markName);
+    const cards: Array<[string, string, string, number]> = [
+      ["s6-archi", "cartes-archi", "s6b", 5],
+      ["s6-eval", "cartes-eval", "s6c", 3],
+      ["s6-isolation", "cartes-isolation", "s6d", 3],
+    ];
+    for (const [markName, cartesMark, segName, cap] of cards) {
+      const fromCartes = cartes?.marks[cartesMark];
+      const cm = fromCartes && typeof fromCartes.end === "number" ? fromCartes : need(markName);
+      const src = fromCartes && typeof fromCartes.end === "number" ? (cartes!.ownerVid as string) : ownerVid;
       const cd = Math.min(cm.end - cm.start, cap);
-      await add("s6-fiable", segName, ["-ss", String(cm.start), "-i", ownerVid, "-t", String(cd),
+      await add("s6-fiable", segName, ["-ss", String(cm.start), "-i", src, "-t", String(cd),
         "-vf", `scale=${W}:${H},${fade(cd)}`]);
     }
   }
-  // S7 — carte de fin (10 s).
+  // S7 — carte de fin (7 s).
   {
-    const m = need("s7-fin");
-    const d = Math.min(m.end - m.start, 10);
-    await add("s7-fin", "s7", ["-ss", String(m.start), "-i", ownerVid, "-t", String(d),
+    const cm = cartes?.marks["cartes-fin"];
+    const m = cm && typeof cm.end === "number" ? cm : need("s7-fin");
+    const src = cm && typeof cm.end === "number" ? (cartes!.ownerVid as string) : ownerVid;
+    const d = Math.min(m.end - m.start, 7);
+    await add("s7-fin", "s7", ["-ss", String(m.start), "-i", src, "-t", String(d),
       "-vf", `scale=${W}:${H},${fade(d)}`]);
   }
 
@@ -209,7 +248,7 @@ async function main() {
   // --- Encodage final : sous-titres gravés + musique optionnelle -------------
   const music = resolve("scripts/demo-assets/musique.mp3");
   const outFile = join(DEMO_DIR, "oren-demo.mp4");
-  const subFilter = `subtitles=filename=sous-titres-en.srt:force_style='FontName=Arial,FontSize=20,PrimaryColour=&HFFFFFF&,OutlineColour=&H99000000&,BorderStyle=1,Outline=1,Shadow=0,Alignment=2,MarginV=30'`;
+  const subFilter = `subtitles=filename=docs/demo/sous-titres-en.srt:force_style='FontName=Arial,FontSize=20,PrimaryColour=&HFFFFFF&,OutlineColour=&H99000000&,BorderStyle=1,Outline=1,Shadow=0,Alignment=2,MarginV=30'`;
   if (existsSync(music)) {
     await ff(["-i", joined, "-i", music, "-vf", subFilter,
       "-filter_complex", "[1:a]volume=0.07,afade=t=in:st=0:d=1,afade=t=out:st=" + Math.max(0, totalDur - 2).toFixed(1) + ":d=2[a]",

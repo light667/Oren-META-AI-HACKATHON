@@ -37,12 +37,12 @@ interface ChatMessage {
 }
 
 interface PendingConfirmation {
-  orderDraftToken: string;
+  orderId: string;
+  token: string;
   summary: string;
-  totalFcfa: number;
-  items: { name: string; quantity: number; priceFcfa: number }[];
+  subtotalFcfa: number;
   deliveryFeeFcfa: number;
-  neighborhood: string;
+  totalFcfa: number;
 }
 
 interface Props {
@@ -169,7 +169,7 @@ export function PublicChat({
       const response = await fetch(`/api/chat/${slug}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, sessionId }),
+        body: JSON.stringify({ text, sessionId }),
       });
 
       if (response.status === 429) {
@@ -204,8 +204,8 @@ export function PublicChat({
           const payload = line.slice(6);
           try {
             const data = JSON.parse(payload) as Record<string, unknown>;
-            if (typeof data.delta === "string") {
-              assistantText += data.delta;
+            if (data.type === "delta" && typeof data.text === "string") {
+              assistantText += data.text;
               setMessages((prev) => {
                 const next = [...prev];
                 const last = next[next.length - 1];
@@ -218,7 +218,7 @@ export function PublicChat({
             if (data.pendingConfirmation) {
               setPending(data.pendingConfirmation as PendingConfirmation);
             }
-            if (data.handedOver) {
+            if (data.handedToHuman) {
               setHanded(true);
             }
           } catch {
@@ -255,7 +255,7 @@ export function PublicChat({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          orderDraftToken: pending.orderDraftToken,
+          token: pending.token,
           customerName: customer.name,
           customerPhone: customer.phone,
           paymentMethod: payment,
@@ -272,7 +272,7 @@ export function PublicChat({
         orderId: String(data?.orderId ?? ""),
         totalFcfa: Number(data?.totalFcfa ?? pending.totalFcfa),
         status: String(data?.status ?? "confirmed"),
-        lines: pending.items,
+        lines: [],
       });
       setPending(null);
       setCart({});

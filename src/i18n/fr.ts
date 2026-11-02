@@ -410,7 +410,25 @@ export const fr = {
     heroPromise: "Votre assistant répond à vos clients et prend leurs commandes, jour et nuit.",
     heroSub:
       "Prêt en moins d'une heure, en français, à partir d'une simple photo de votre menu. Vos clients commandent depuis un lien ou un QR code, sans installer d'application.",
+    setup45Title: "D'une photo de menu papier à un restaurant en ligne en 45 secondes",
+    setup45Sub:
+      "Prenez votre menu en photo, dictez vos règles vocales. L'IA extrait, structure et prépare votre catalogue sans aucune saisie fastidieuse.",
+    setupCards: [
+      {
+        title: "1. Vision par photo",
+        body: "Le modèle analyse la carte physique du restaurant : noms de plats, catégories et prix en FCFA. Les ambiguïtés sont signalées pour validation.",
+      },
+      {
+        title: "2. Note vocale naturelle",
+        body: "Dictez vos horaires et vos quartiers de livraison (Agoè, Bè, Tokoin...). La transcription audio extrait précisément vos paramètres réels.",
+      },
+      {
+        title: "3. Prêt à vendre : 45.8s",
+        body: "Vous vérifiez chaque ligne d'un coup d'œil, cliquez sur Publier, et partagez immédiatement votre QR code et lien à vos clients.",
+      },
+    ],
     howTitle: "Comment ça marche",
+    howSub: "Une expérience fluide en 3 étapes claires, pour le commerçant comme pour le client.",
     steps: [
       {
         title: "Photographiez votre menu",
@@ -426,6 +444,8 @@ export const fr = {
       },
     ],
     benefitsTitle: "Pourquoi les commerçants l'aiment",
+    benefitsSub:
+      "Une technologie robuste conçue spécifiquement pour les réalités du commerce en Afrique francophone.",
     benefits: [
       {
         title: "Ne ratez plus aucune commande",
@@ -460,6 +480,7 @@ export const fr = {
       },
     ],
     audienceTitle: "Pour qui ?",
+    audienceSub: "Une architecture multi-entreprises prête pour tous les métiers de service.",
     audience: [
       { name: "Restaurants", status: "Disponible" },
       { name: "Hôtels", status: "Bientôt" },
@@ -469,6 +490,7 @@ export const fr = {
     availableNow: "Disponible",
     comingSoon: "Bientôt",
     faqTitle: "Questions fréquentes",
+    faqSub: "Des réponses claires et transparentes sur le fonctionnement d'Oren.",
     faq: [
       {
         q: "Combien ça coûte ?",

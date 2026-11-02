@@ -2,21 +2,43 @@
   "demoUrl": "http://localhost:3000",
   "slug": "chez-chef-t",
   "voiceSec": 19.5345,
-  "startedAt": "2026-11-02T00:31:00.554Z",
+  "videoStartOffsetSec": 3.573,
+  "startedAt": "2026-11-02T02:37:58.450Z",
   "marks": {
-    "s3-mise-en-route": {
-      "start": 9.075
+    "s4-lien": {
+      "start": 11.627,
+      "end": 17.779,
+      "ctx": "owner"
     },
-    "s3-vision-wait": {
-      "start": 13.362
+    "s4-client": {
+      "start": 17.779,
+      "end": 65.802,
+      "ctx": "phone"
+    },
+    "s5-patron": {
+      "start": 65.804,
+      "end": 92.485,
+      "ctx": "owner"
     }
   },
   "notes": [
     "patron connecté (session réelle Supabase Auth)",
-    "scène 3 en échec : locator.waitFor: Timeout 240000ms exceeded."
+    "appel /api/chat/chez-chef-t → HTTP 200",
+    "appel /api/chat/chez-chef-t → HTTP 200",
+    "récapitulatif calculé par le code affiché",
+    "appel /api/chat/chez-chef-t/confirm → HTTP 200",
+    "commande confirmée par le client (jeton à usage unique)",
+    "commande reçue en temps réel chez le patron",
+    "appel /api/chat/chez-chef-t/order-status → HTTP 200",
+    "appel /api/chat/chez-chef-t/order-status → HTTP 200",
+    "appel /api/chat/chez-chef-t/order-status → HTTP 200",
+    "appel /api/chat/chez-chef-t/order-status → HTTP 200",
+    "appel /api/chat/chez-chef-t/order-status → HTTP 200",
+    "appel /api/chat/chez-chef-t/order-status → HTTP 200",
+    "appel /api/chat/chez-chef-t/order-status → HTTP 200"
   ],
   "videos": {
-    "owner": "C:\\Users\\netha\\Dev\\oren\\docs\\demo\\raw\\owner\\page@0c8d3041bf238750124efc84f8439bb2.webm",
-    "phone": "C:\\Users\\netha\\Dev\\oren\\docs\\demo\\raw\\phone\\page@02ec9a4a9ec32b828793813876a103b0.webm"
+    "owner": "C:\\Users\\netha\\Dev\\oren\\docs\\demo\\raw\\owner\\page@c44f76e94a520aa78fe824b767e62a6f.webm",
+    "phone": "C:\\Users\\netha\\Dev\\oren\\docs\\demo\\raw\\phone\\page@f57a6f793466a64ae164385679d501d1.webm"
   }
 }

@@ -41,7 +41,7 @@ const STEP_ICONS = [Camera, BadgeCheck, Link2];
 const BENEFIT_ICONS = [Smartphone, Sparkles, Hand, Wallet];
 
 export default function Home() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-background text-foreground antialiased selection:bg-[#0ebb7c]/20 selection:text-[#0ebb7c]">
@@ -54,7 +54,7 @@ export default function Home() {
             name: t.app.title,
             applicationCategory: "BusinessApplication",
             operatingSystem: "Web",
-            inLanguage: "fr",
+            inLanguage: locale,
             description: t.app.seo.description,
             url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
           }),
@@ -115,46 +115,44 @@ export default function Home() {
         <section className="relative my-16 rounded-3xl border border-border/80 bg-gradient-to-b from-secondary/40 via-card/60 to-background p-6 sm:p-10 shadow-xs">
           <div className="mb-8 text-center space-y-3">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
-              D'une photo de menu papier à un restaurant en ligne en 45 secondes
+              {t.landing.setup45Title}
             </h2>
             <p className="mx-auto max-w-2xl text-sm sm:text-base text-muted-foreground">
-              Prenez votre menu en photo, dictez vos règles vocales. L'IA extrait, structure et prépare votre catalogue sans aucune saisie fastidieuse.
+              {t.landing.setup45Sub}
             </p>
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
-            {/* Carte 1 */}
-            <div className="rounded-2xl border border-border/60 bg-card p-5 space-y-3 transition-all hover:border-[#0ebb7c]/40 hover:shadow-xs">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0ebb7c]/10 text-[#0ebb7c]">
-                <Camera className="h-5 w-5" />
-              </div>
-              <h3 className="font-bold text-base">1. Vision par photo</h3>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                Le modèle analyse la carte physique du restaurant : noms de plats, catégories et prix en FCFA. Les ambiguïtés sont signalées pour validation.
-              </p>
-            </div>
-
-            {/* Carte 2 */}
-            <div className="rounded-2xl border border-border/60 bg-card p-5 space-y-3 transition-all hover:border-[#0ebb7c]/40 hover:shadow-xs">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0ebb7c]/10 text-[#0ebb7c]">
-                <Mic className="h-5 w-5" />
-              </div>
-              <h3 className="font-bold text-base">2. Note vocale naturelle</h3>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                Dictez vos horaires et vos quartiers de livraison (Agoè, Bè, Tokoin...). La transcription audio extrait précisément vos paramètres réels.
-              </p>
-            </div>
-
-            {/* Carte 3 */}
-            <div className="rounded-2xl border border-[#0ebb7c]/40 bg-[#0ebb7c]/5 p-5 space-y-3 transition-all hover:shadow-xs">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0ebb7c] text-white">
-                <Clock className="h-5 w-5" />
-              </div>
-              <h3 className="font-bold text-base text-[#0ebb7c]">3. Prêt à vendre : 45.8s</h3>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                Vous vérifiez chaque ligne d'un coup d'œil, cliquez sur Publier, et partagez immédiatement votre QR code et lien à vos clients.
-              </p>
-            </div>
+            {t.landing.setupCards.map((card, index) => {
+              const Icon = [Camera, Mic, Clock][index] || Camera;
+              const featured = index === 2;
+              return (
+                <div
+                  key={card.title}
+                  className={
+                    featured
+                      ? "rounded-2xl border border-[#0ebb7c]/40 bg-[#0ebb7c]/5 p-5 space-y-3 transition-all hover:shadow-xs"
+                      : "rounded-2xl border border-border/60 bg-card p-5 space-y-3 transition-all hover:border-[#0ebb7c]/40 hover:shadow-xs"
+                  }
+                >
+                  <div
+                    className={
+                      featured
+                        ? "flex h-10 w-10 items-center justify-center rounded-xl bg-[#0ebb7c] text-white"
+                        : "flex h-10 w-10 items-center justify-center rounded-xl bg-[#0ebb7c]/10 text-[#0ebb7c]"
+                    }
+                  >
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <h3 className={featured ? "font-bold text-base text-[#0ebb7c]" : "font-bold text-base"}>
+                    {card.title}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                    {card.body}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         </section>
 
@@ -165,7 +163,7 @@ export default function Home() {
               {t.landing.howTitle}
             </h2>
             <p className="text-muted-foreground max-w-xl">
-              Une expérience fluide en 3 étapes claires, pour le commerçant comme pour le client.
+              {t.landing.howSub}
             </p>
           </div>
 
@@ -207,7 +205,7 @@ export default function Home() {
               {t.landing.benefitsTitle}
             </h2>
             <p className="text-muted-foreground max-w-xl">
-              Une technologie robuste conçue spécifiquement pour les réalités du commerce en Afrique francophone.
+              {t.landing.benefitsSub}
             </p>
           </div>
 
@@ -244,7 +242,7 @@ export default function Home() {
               {t.landing.audienceTitle}
             </h2>
             <p className="text-muted-foreground max-w-xl">
-              Une architecture multi-entreprises prête pour tous les métiers de service.
+              {t.landing.audienceSub}
             </p>
           </div>
 
@@ -285,7 +283,7 @@ export default function Home() {
               {t.landing.faqTitle}
             </h2>
             <p className="text-muted-foreground">
-              Des réponses claires et transparentes sur le fonctionnement d'Oren.
+              {t.landing.faqSub}
             </p>
           </div>
 
