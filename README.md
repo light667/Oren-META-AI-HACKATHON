@@ -47,6 +47,11 @@ npm run build       # production build
 npm run smoke       # 5 real Meta calls: text, tool use, JSON, image, audio
 ```
 
+## Links
+
+- [Demo Video](https://drive.google.com/file/d/10xX_3OUsd3q7-4Zo4TTRvT1A7s7EER4Z/view?usp=sharing) — 3-minute walkthrough
+- [Live MVP](https://oren-agent.vercel.app/) — Try the assistant now
+
 ## Built during the hackathon
 
 **All code in this repository was written during the event, starting October 26, 2026**, for the Meta hackathon (submission deadline November 4, 2026, 21:00 ET). The commit history shows the work as it happened. No code was copied from any earlier project, and the repository contains no secrets (`.env*` is git-ignored; `.env.example` documents every variable).
@@ -59,3 +64,7 @@ Explicitly **NOT built** — interfaces and extension points exist, implementati
 - Bookings and appointments capabilities (hotels, salons, invoicing, admin)
 
 Roadmap after the hackathon: Togo pilot (November 2026), then Mobile Money, SMS, Telegram, WhatsApp and additional trades on the same capability architecture.
+
+## License
+
+MIT License — see [LICENSE](LICENSE) for details.
