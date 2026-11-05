@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useI18n } from "@/i18n/context";
+import { authErrorMessage } from "@/lib/auth-error";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import { signupSchema } from "@/lib/validation";
 import { Mail, ArrowRight, CheckCircle2, AlertCircle, Sparkles } from "lucide-react";
@@ -48,8 +49,8 @@ export function LoginForm({ showError }: { showError: boolean }) {
       });
       if (otpError) throw otpError;
       setSent(true);
-    } catch {
-      setError(t.common.error);
+    } catch (err) {
+      setError(authErrorMessage(err, { rateLimited: t.auth.rateLimited, generic: t.common.error }));
     } finally {
       setBusy(false);
     }
@@ -186,8 +187,8 @@ export function SignupForm() {
       });
       if (otpError) throw otpError;
       setSent(true);
-    } catch {
-      setError(t.common.error);
+    } catch (err) {
+      setError(authErrorMessage(err, { rateLimited: t.auth.rateLimited, generic: t.common.error }));
     } finally {
       setBusy(false);
     }

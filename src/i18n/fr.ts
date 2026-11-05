@@ -114,6 +114,7 @@ export const fr = {
     loginLink: "Se connecter",
     signupLink: "Créer une entreprise",
     callbackError: "Ce lien de connexion est invalide ou expiré. Demandez-en un nouveau.",
+    rateLimited: "Trop de demandes de lien en peu de temps. Patientez quelques minutes, puis utilisez le dernier lien reçu (les précédents sont annulés). Pensez à vérifier vos courriers indésirables.",
     signOut: "Se déconnecter",
     notConfigured: "La connexion n'est pas encore configurée sur ce serveur.",
   },

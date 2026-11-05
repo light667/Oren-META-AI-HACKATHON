@@ -108,6 +108,7 @@ export const en = {
     loginLink: "Log in",
     signupLink: "Create a business",
     callbackError: "This login link is invalid or expired. Please request a new one.",
+    rateLimited: "Too many link requests in a short time. Wait a few minutes, then use the last link you received (earlier ones are cancelled). Please check your spam folder too.",
     signOut: "Sign out",
     notConfigured: "Authentication is not configured on this server.",
   },
