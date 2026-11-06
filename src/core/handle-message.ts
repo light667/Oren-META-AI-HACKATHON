@@ -1,4 +1,5 @@
 import { fr } from "@/i18n/fr";
+import { toPlainText } from "./plain-text";
 import type {
   ChatMessage,
   LlmProvider,
@@ -314,6 +315,8 @@ async function run(
   }
 
   if (finalText === null) finalText = fr.assistant.tooManySteps;
+  // Affichage brut côté client (web, puis SMS/WhatsApp) : jamais de Markdown.
+  finalText = toPlainText(finalText) || fr.assistant.unknownReply;
 
   await store.addMessage({
     businessId,

@@ -305,3 +305,15 @@ describe("handoff_to_human et consigne système", () => {
     expect(store.audit.every((a) => a.businessId === BIZ)).toBe(true);
   });
 });
+
+describe("réponses en texte simple", () => {
+  it("le Markdown renvoyé par le modèle n'arrive jamais au client", async () => {
+    const { handle, llm } = setup([
+      { type: "text", content: "## Menu\n- **Attiéké poulet** : 2 000 FCFA\n- *Alloco* : 1 500 FCFA" },
+    ]);
+    const reply = await handle(BIZ, "session-md", "web", "Qu'avez-vous ?");
+    expect(reply.text).toBe("Menu\n• Attiéké poulet : 2 000 FCFA\n• Alloco : 1 500 FCFA");
+    const system = llm.calls[0].messages[0].content as string;
+    expect(system).toContain("jamais de Markdown");
+  });
+});
