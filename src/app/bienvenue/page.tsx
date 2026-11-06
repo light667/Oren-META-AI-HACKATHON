@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
 import { OnboardingForm } from "@/components/onboarding-form";
 import { AuthShell } from "@/components/auth-shell";
 import { getCurrentUser, getStaffContext } from "@/lib/server-context";
@@ -6,6 +7,8 @@ import { getCurrentUser, getStaffContext } from "@/lib/server-context";
 export const instant = false;
 
 export default async function WelcomePage() {
+  // Page propre à chaque visiteur (session) : jamais pré-rendue.
+  await connection();
   const user = await getCurrentUser();
   if (!user) redirect("/connexion");
 

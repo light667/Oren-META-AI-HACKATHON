@@ -91,7 +91,7 @@ async function sendVerification(user: FirebaseUser) {
 type SessionOutcome = { ok: true } | { ok: false; unverified?: boolean; message?: string };
 
 /** Échange la connexion Firebase contre la session Supabase, puis redirige. */
-function useCompleteSignIn() {
+export function useCompleteSignIn() {
   const router = useRouter();
   return useCallback(
     async (user: FirebaseUser): Promise<SessionOutcome> => {
@@ -123,7 +123,7 @@ function useCompleteSignIn() {
 /* Éléments partagés                                                   */
 /* ------------------------------------------------------------------ */
 
-function Shell({ children }: { children: React.ReactNode }) {
+export function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative rounded-3xl border border-border/70 bg-card/90 p-6 shadow-2xl shadow-black/5 backdrop-blur-xl sm:p-8">
       {children}
@@ -131,7 +131,7 @@ function Shell({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Notice({ tone, children }: { tone: "error" | "success"; children: React.ReactNode }) {
+export function Notice({ tone, children }: { tone: "error" | "success"; children: React.ReactNode }) {
   const Icon = tone === "error" ? AlertCircle : CheckCircle2;
   return (
     <div
@@ -148,7 +148,7 @@ function Notice({ tone, children }: { tone: "error" | "success"; children: React
   );
 }
 
-function SubmitButton({ busy, children }: { busy: boolean; children: React.ReactNode }) {
+export function SubmitButton({ busy, children }: { busy: boolean; children: React.ReactNode }) {
   const { t } = useI18n();
   return (
     <Button
@@ -179,7 +179,7 @@ function FieldLabel({ htmlFor, children }: { htmlFor?: string; children: React.R
   );
 }
 
-function PasswordField({
+export function PasswordField({
   id,
   label,
   value,
