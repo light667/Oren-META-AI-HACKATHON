@@ -3,7 +3,7 @@ import { productName } from "@/i18n/fr";
 /**
  * Logo « briques » choisi par le fondateur (Tâche D5 / docs/DESIGN.md).
  * En SVG d'une seule couleur (currentColor), coloré avec la couleur
- * de la marque (violet #7c3aed, charte « Énergie »).
+ * de la marque (turquoise #0d9488).
  * Une seule source dans tout le projet : ce composant.
  */
 export function LogoMark({

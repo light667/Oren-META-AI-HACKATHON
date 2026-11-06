@@ -35,7 +35,7 @@ const STEP_ICONS = [Camera, ReceiptText, Link2];
 const FEATURE_ICONS = [Mic, ReceiptText, BellRing, Hand];
 const TRUST_ICONS = [ShieldCheck, Lock, Bot];
 
-/* Boutons de la charte : orange = action principale, contour violet = secondaire */
+/* Boutons : turquoise = action principale, contour = secondaire */
 const ctaClass =
   "hover-press shadow-hard inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-flame px-6 text-sm font-semibold text-white sm:text-base";
 const ghostClass =
@@ -142,7 +142,7 @@ export default function Home() {
               <span className="relative text-brand">
                 {L.heroTitleB}
                 <svg
-                  className="absolute -bottom-2 left-0 h-3 w-full text-flame sm:-bottom-3 sm:h-4"
+                  className="absolute -bottom-2 left-0 h-3 w-full text-foreground sm:-bottom-3 sm:h-4"
                   viewBox="0 0 300 12"
                   preserveAspectRatio="none"
                   aria-hidden
@@ -174,18 +174,18 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Scène de démonstration : aplat violet, téléphone centré, coupé en bas */}
+          {/* Scène de démonstration : aplat carbone, téléphone centré, coupé en bas */}
           <div className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
             <figure
-              className="animate-fade-up shadow-hard-lg relative overflow-hidden rounded-xl border-2 border-ink bg-brand px-4 pt-10 sm:pt-14"
+              className="animate-fade-up shadow-hard-lg relative overflow-hidden rounded-xl border-2 border-ink bg-zinc-900 px-4 pt-10 sm:pt-14"
               style={{ animationDelay: "300ms" }}
             >
               <div
-                className="pointer-events-none absolute inset-0 opacity-25 [background-image:radial-gradient(rgb(255_255_255/0.45)_1px,transparent_1px)] [background-size:22px_22px]"
+                className="pointer-events-none absolute inset-0 opacity-20 [background-image:radial-gradient(rgb(255_255_255/0.45)_1px,transparent_1px)] [background-size:22px_22px]"
                 aria-hidden
               />
               <div className="pointer-events-none absolute -left-10 bottom-10 h-40 w-40 rotate-12 rounded-xl bg-flame" aria-hidden />
-              <div className="pointer-events-none absolute -right-8 top-8 h-28 w-28 rounded-full border-[10px] border-white/25" aria-hidden />
+              <div className="pointer-events-none absolute -right-8 top-8 h-28 w-28 rounded-full border-[10px] border-white/15" aria-hidden />
 
               <div className="relative mx-auto flex max-w-5xl justify-center">
                 <FloatCard className="animate-float left-0 top-12 xl:left-4">
@@ -232,31 +232,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Chiffres clés : bande encre */}
-        <section className="bg-ink text-white dark:bg-card">
-          <dl className="mx-auto grid max-w-6xl grid-cols-2 px-4 sm:px-6 lg:grid-cols-4">
-            {L.stats.map((stat, i) => (
-              <div
-                key={stat.label}
-                className={cn(
-                  "px-3 py-10 text-center sm:px-6",
-                  i % 2 === 1 && "border-l border-white/15",
-                  i === 2 && "lg:border-l lg:border-white/15",
-                  i >= 2 && "border-t border-white/15 lg:border-t-0",
-                )}
-              >
-                <dt className="sr-only">{stat.label}</dt>
-                <dd className={cn("font-heading text-4xl font-bold tracking-tight sm:text-5xl", i % 2 === 0 ? "text-flame" : "text-white")}>
-                  {stat.value}
-                </dd>
-                <dd className="mx-auto mt-3 max-w-[15rem] text-xs leading-relaxed text-white/70 sm:text-sm">
-                  {stat.label}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-
         {/* Fonctionnalités : cartes franches, ombre signature */}
         <section className="mx-auto max-w-6xl space-y-14 px-4 py-24 sm:px-6">
           <Reveal><SectionHeading eyebrow={L.featuresEyebrow} title={L.featuresTitle} sub={L.featuresSub} /></Reveal>
@@ -269,7 +244,7 @@ export default function Home() {
                 <article
                   className={cn(
                     "hover-press shadow-hard rounded-xl border-2 border-ink p-7",
-                    accent ? "bg-brand text-brand-foreground" : "bg-card",
+                    accent ? "bg-zinc-900 text-white" : "bg-card",
                   )}
                 >
                   <div
@@ -296,10 +271,10 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Comment ça marche : aplat orange */}
-        <section id="comment-ca-marche" className="scroll-mt-20 border-y-2 border-ink bg-flame py-24 text-white">
+        {/* Comment ça marche : gris clair */}
+        <section id="comment-ca-marche" className="scroll-mt-20 border-y-2 border-ink bg-secondary py-24">
           <div className="mx-auto max-w-6xl space-y-14 px-4 sm:px-6">
-            <Reveal><SectionHeading eyebrow={L.stepsEyebrow} title={L.howTitle} sub={L.howSub} light /></Reveal>
+            <Reveal><SectionHeading eyebrow={L.stepsEyebrow} title={L.howTitle} sub={L.howSub} /></Reveal>
             <ol className="grid gap-6 md:grid-cols-3">
               {L.steps.map((step, index) => {
                 const Icon = STEP_ICONS[index] ?? Camera;
@@ -345,7 +320,7 @@ export default function Home() {
         </section>
 
         {/* Pour qui */}
-        <section id="pour-qui" className="scroll-mt-20 bg-brand-soft py-24 dark:bg-secondary">
+        <section id="pour-qui" className="scroll-mt-20 border-y-2 border-ink bg-secondary py-24">
           <div className="mx-auto max-w-6xl space-y-12 px-4 sm:px-6">
             <Reveal><SectionHeading eyebrow={L.audienceLink} title={L.audienceTitle} sub={L.audienceSub} /></Reveal>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -358,14 +333,14 @@ export default function Home() {
                       "h-full rounded-xl border-2 p-6",
                       available
                         ? "shadow-hard border-ink bg-brand text-brand-foreground"
-                        : "border-dashed border-brand/40 bg-card/60",
+                        : "border-dashed border-ink/30 bg-card",
                     )}
                   >
                     <p className="font-heading text-xl font-bold">{entry.name}</p>
                     <p
                       className={cn(
                         "mt-2 font-mono text-xs font-semibold uppercase tracking-wider",
-                        available ? "text-white/85" : "text-muted-foreground",
+                        available ? "opacity-80" : "text-muted-foreground",
                       )}
                     >
                       {entry.status}
@@ -399,9 +374,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Appel final : aplat violet + CTA orange */}
+        {/* Appel final : aplat carbone + bouton turquoise */}
         <section className="px-4 pb-24 sm:px-6">
-          <div className="shadow-hard-lg relative mx-auto max-w-6xl overflow-hidden rounded-xl border-2 border-ink bg-brand px-6 py-16 text-center text-brand-foreground sm:px-12 sm:py-20">
+          <div className="shadow-hard-lg relative mx-auto max-w-6xl overflow-hidden rounded-xl border-2 border-ink bg-zinc-900 px-6 py-16 text-center text-white sm:px-12 sm:py-20">
             <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rotate-12 rounded-xl bg-flame" aria-hidden />
             <div className="pointer-events-none absolute -bottom-16 -left-10 h-40 w-40 rounded-full border-[14px] border-white/20" aria-hidden />
             <h2 className="relative mx-auto max-w-2xl text-balance text-3xl font-bold tracking-tight sm:text-5xl">
