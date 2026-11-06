@@ -1,7 +1,8 @@
+import { siteUrl as getSiteUrl } from "@/lib/site-url";
 import type { MetadataRoute } from "next";
 import { fr } from "@/i18n/fr";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const siteUrl = getSiteUrl();
 
 /** Pages publiques indexables. L'espace patron et les API restent hors sitemap. */
 export default function sitemap(): MetadataRoute.Sitemap {

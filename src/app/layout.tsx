@@ -1,41 +1,45 @@
 import type { Metadata, Viewport } from "next";
-import { en } from "@/i18n/en";
+import { Inter } from "next/font/google";
+import { fr } from "@/i18n/fr";
 import "./globals.css";
 import { I18nProvider } from "@/i18n/context";
+import { siteUrl as getSiteUrl } from "@/lib/site-url";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
+
+const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: en.app.seo.title,
-    template: `%s — ${en.app.title}`,
+    default: fr.app.seo.title,
+    template: `%s — ${fr.app.title}`,
   },
-  description: en.app.seo.description,
-  keywords: en.app.seo.keywords,
-  applicationName: en.app.title,
-  authors: [{ name: en.app.title }],
-  creator: en.app.title,
-  publisher: en.app.title,
+  description: fr.app.seo.description,
+  keywords: fr.app.seo.keywords,
+  applicationName: fr.app.title,
+  authors: [{ name: fr.app.title }],
+  creator: fr.app.title,
+  publisher: fr.app.title,
   alternates: { canonical: "/" },
-  appleWebApp: { capable: true, title: en.app.title },
+  appleWebApp: { capable: true, title: fr.app.title },
   icons: {
     icon: "/icon.svg",
     apple: "/icons/apple-touch-icon.png",
   },
   openGraph: {
     type: "website",
-    locale: "en_US",
-    siteName: en.app.title,
-    title: en.app.seo.title,
-    description: en.app.seo.description,
+    locale: "fr_FR",
+    siteName: fr.app.title,
+    title: fr.app.seo.title,
+    description: fr.app.seo.description,
     url: "/",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: en.app.seo.title }],
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: fr.app.seo.title }],
   },
   twitter: {
     card: "summary_large_image",
-    title: en.app.seo.title,
-    description: en.app.seo.description,
+    title: fr.app.seo.title,
+    description: fr.app.seo.description,
     images: ["/og.png"],
   },
   robots: {
@@ -54,16 +58,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
-      <head>
-        <meta charSet="utf-8" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Inter:wght@300;400;500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="fr" className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col bg-background font-sans text-foreground">
         <script
           dangerouslySetInnerHTML={{

@@ -1,0 +1,6 @@
+# Nouvelle page vitrine (2026-11-06)
+
+Fait : héros centré (promesse, deux appels à l'action, trois garanties), puis une **scène de démonstration pleine largeur** façon vidéo de présentation : le téléphone, au centre et coupé en bas, rejoue une vraie commande (question, récapitulatif chiffré plat + livraison = total, « oui » explicite, confirmation). Sur grand écran, il est entouré de cartes « espace patron », import photo, note vocale et passage à un humain. Ensuite : chiffres clés, fonctionnalités, étapes, confiance, métiers, FAQ (accordéon natif), appel final.
+Cohérence : vert de marque en jetons (`--brand`, `--primary` alignés, clair et sombre), une seule police Inter via `next/font`, français par défaut (`lang="fr"`, métadonnées FR), cadre commun `AuthShell` pour connexion/inscription/bienvenue. Les classes `oren-rise`, `oren-typing-dot` et `gradient-text-green`, utilisées mais jamais définies, existent désormais (le chat client s'anime enfin) ; animations coupées si `prefers-reduced-motion`.
+Prod : aucune URL localhost hors développement (`src/lib/site-url.ts`), numéro WhatsApp du pied de page en variable `NEXT_PUBLIC_CONTACT_WHATSAPP` (masqué si absent), année et nom du produit dynamiques.
+Essayer : `npm run dev`, ouvrir `/` en 1440 px puis 390 px, en clair et en sombre ; aucun défilement horizontal (vérifié à 390 px).

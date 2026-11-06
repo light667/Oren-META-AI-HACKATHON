@@ -2,12 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { DemoPhone } from "@/components/demo-phone";
+import { useI18n } from "@/i18n/context";
 
 /**
- * Monte le téléphone de démonstration seulement après le chargement
- * complet de la page : son animation ne bloque jamais l'affichage.
+ * Monte le téléphone de démonstration après le chargement complet de la
+ * page : son animation ne retarde jamais l'affichage. Un changement de
+ * langue remonte le composant (la conversation repart de zéro).
  */
-export function DemoPhoneMount() {
+export function DemoPhoneMount({ className }: { className?: string }) {
+  const { locale } = useI18n();
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -23,10 +26,10 @@ export function DemoPhoneMount() {
   if (!ready) {
     return (
       <div
-        className="mx-auto h-[500px] w-full max-w-[340px] rounded-[2rem] border bg-card"
+        className="mx-auto h-[620px] w-full max-w-[340px] rounded-[3rem] bg-zinc-900/90"
         aria-hidden
       />
     );
   }
-  return <DemoPhone />;
+  return <DemoPhone key={locale} className={className} />;
 }

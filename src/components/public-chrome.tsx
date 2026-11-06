@@ -5,14 +5,21 @@ import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
 import { useI18n } from "@/i18n/context";
-import { MessageSquare, ArrowRight, Sparkles } from "lucide-react";
+import { MessageSquare, ArrowRight } from "lucide-react";
+
+// Année du pied de page, figée au chargement du module (pas de valeur
+// instable pendant le rendu, cf. Next.js cacheComponents).
+const YEAR = new Date().getFullYear();
+
+// Numéro WhatsApp de contact (chiffres, format wa.me). Absent : lien masqué.
+const CONTACT_WHATSAPP = (process.env.NEXT_PUBLIC_CONTACT_WHATSAPP ?? "").replace(/\D/g, "");
 
 /** En-tête public moderne (style startup américaine, glassmorphism, responsive). */
 export function PublicHeader() {
   const { t } = useI18n();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl transition-colors">
+    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/75 backdrop-blur-xl backdrop-saturate-150 transition-colors">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         {/* Logo */}
         <Link
@@ -20,13 +27,13 @@ export function PublicHeader() {
           aria-label={t.nav.home}
           className="shrink-0 transition-transform hover:scale-[1.02] active:scale-95"
         >
-          <Logo markClassName="h-7 w-7 text-[#0ebb7c]" wordmarkClassName="font-heading text-xl font-extrabold tracking-tight text-foreground" />
+          <Logo markClassName="h-7 w-7 text-brand" wordmarkClassName="font-heading text-xl font-extrabold tracking-tight text-foreground" />
         </Link>
 
         {/* Navigation centrale */}
         <nav
           className="hidden items-center gap-7 text-sm font-medium text-muted-foreground md:flex"
-          aria-label="Navigation principale"
+          aria-label={t.nav.home}
         >
           <Link
             className="transition-colors hover:text-foreground"
@@ -64,7 +71,7 @@ export function PublicHeader() {
 
           <Link
             href="/inscription"
-            className="group relative inline-flex h-9 items-center justify-center gap-1.5 rounded-full bg-primary px-4 text-xs font-semibold text-primary-foreground shadow-xs transition-all duration-200 hover:opacity-90 hover:shadow-md hover:shadow-primary/20 active:scale-95 sm:h-10 sm:px-5 sm:text-sm"
+            className="group relative inline-flex h-9 items-center justify-center gap-1.5 rounded-full bg-foreground px-4 text-xs font-semibold text-background transition-all duration-200 hover:-translate-y-px hover:shadow-md active:translate-y-0 sm:px-5 sm:text-sm"
           >
             <span>{t.landing.createAssistant}</span>
             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -85,7 +92,7 @@ export function PublicFooter() {
         <div className="flex flex-col justify-between gap-8 md:flex-row md:items-center">
           <div className="space-y-3">
             <Logo
-              markClassName="h-7 w-7 text-[#0ebb7c]"
+              markClassName="h-7 w-7 text-brand"
               wordmarkClassName="font-heading text-xl font-extrabold tracking-tight text-foreground"
             />
             <p className="max-w-md text-sm text-muted-foreground">
@@ -113,20 +120,24 @@ export function PublicFooter() {
             >
               {t.home.loginCta}
             </Link>
-            <a
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#25d366]/40 bg-[#25d366]/10 px-3.5 py-1.5 text-xs font-semibold text-[#25d366] transition-colors hover:bg-[#25d366]/20"
-              href="https://wa.me/22870703111"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <MessageSquare className="h-3.5 w-3.5" />
-              <span>{t.landing.footerContact}</span>
-            </a>
+            {CONTACT_WHATSAPP && (
+              <a
+                className="inline-flex items-center gap-1.5 rounded-full border border-[#25d366]/40 bg-[#25d366]/10 px-3.5 py-1.5 text-xs font-semibold text-[#128c4a] transition-colors hover:bg-[#25d366]/20 dark:text-[#25d366]"
+                href={`https://wa.me/${CONTACT_WHATSAPP}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MessageSquare className="h-3.5 w-3.5" />
+                <span>{t.landing.footerContact}</span>
+              </a>
+            )}
           </div>
         </div>
 
         <div className="flex flex-col items-center justify-between gap-4 border-t border-border/40 pt-6 text-xs text-muted-foreground sm:flex-row">
-          <p>© 2026 Oren. Tous droits réservés.</p>
+          <p>
+            © {YEAR} {t.app.title}. {t.landing.copyright}
+          </p>
           <div className="flex items-center gap-3">
             <LanguageToggle />
           </div>
