@@ -5,6 +5,7 @@
  * Chat + outils (functionDeclarations), vision (inlineData/fileData),
  * sortie JSON, et transcription audio via contenu multimodal.
  */
+import { defaultLlmFetch } from "./http";
 import {
   LlmProviderError,
   type ChatMessage,
@@ -35,7 +36,7 @@ export function resolveGeminiConfig(config: GeminiLlmConfig = {}) {
       "",
     baseUrl: (config.baseUrl ?? process.env.GEMINI_BASE_URL ?? DEFAULT_BASE_URL).replace(/\/$/, ""),
     model: config.model ?? process.env.GEMINI_MODEL ?? DEFAULT_MODEL,
-    fetchFn: config.fetchFn ?? fetch,
+    fetchFn: config.fetchFn ?? defaultLlmFetch(),
   };
 }
 
@@ -162,7 +163,11 @@ export class GeminiLlmProvider implements LlmProvider {
           functionDeclarations: options.tools.map((t) => ({
             name: t.name,
             description: t.description,
-            parameters: t.parameters,
+            // `parameters` n'accepte qu'un sous-ensemble OpenAPI et rejette
+            // `additionalProperties` (produit par Zod) : HTTP 400 vérifié en
+            // réel. `parametersJsonSchema` accepte le JSON Schema complet,
+            // comme `responseJsonSchema` plus bas.
+            parametersJsonSchema: t.parameters,
           })),
         },
       ];

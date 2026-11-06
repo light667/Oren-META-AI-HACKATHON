@@ -6,6 +6,7 @@
  *   accepte wav/mp3/m4a/ogg/flac — là où Meta n'accepte que le WAV.
  * Clé : MISTRAL_API_KEY (jamais dans le code).
  */
+import { defaultLlmFetch } from "./http";
 import {
   LlmProviderError,
   type ChatMessage,
@@ -39,8 +40,27 @@ export function resolveMistralConfig(config: MistralLlmConfig = {}) {
     chatModel: config.chatModel ?? process.env.MISTRAL_CHAT_MODEL ?? DEFAULT_CHAT_MODEL,
     transcribeModel:
       config.transcribeModel ?? process.env.MISTRAL_TRANSCRIBE_MODEL ?? DEFAULT_TRANSCRIBE_MODEL,
-    fetchFn: config.fetchFn ?? fetch,
+    fetchFn: config.fetchFn ?? defaultLlmFetch(),
   };
+}
+
+/**
+ * Mistral exige des identifiants d'appel d'outil de 9 caractères
+ * alphanumériques. Quand Mistral reprend un tour commencé par Meta
+ * (relais en cours de conversation), les identifiants Meta sont
+ * convertis de façon déterministe : l'appel et sa réponse « tool »
+ * gardent le même identifiant converti.
+ */
+export function toMistralToolId(id: string): string {
+  if (/^[a-zA-Z0-9]{9}$/.test(id)) return id;
+  let h1 = 0x811c9dc5;
+  let h2 = 0x01000193;
+  for (let i = 0; i < id.length; i++) {
+    const c = id.charCodeAt(i);
+    h1 = Math.imul(h1 ^ c, 0x01000193) >>> 0;
+    h2 = Math.imul(h2 ^ c, 0x85ebca6b) >>> 0;
+  }
+  return (h1.toString(36) + h2.toString(36) + "000000000").slice(0, 9);
 }
 
 function parseToolCalls(raw: unknown): ToolCall[] {
@@ -118,11 +138,11 @@ export class MistralLlmProvider implements LlmProvider {
                   ? { type: "text", text: p.text }
                   : { type: "image_url", image_url: { url: p.url } },
               ),
-        ...(m.toolCallId ? { tool_call_id: m.toolCallId } : {}),
+        ...(m.toolCallId ? { tool_call_id: toMistralToolId(m.toolCallId) } : {}),
         ...(m.toolCalls?.length
           ? {
               tool_calls: m.toolCalls.map((c) => ({
-                id: c.id,
+                id: toMistralToolId(c.id),
                 type: "function",
                 function: { name: c.name, arguments: c.arguments },
               })),

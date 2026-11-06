@@ -19,6 +19,7 @@
  *   Audio accepté : WAV RIFF mono PCM 16 bits à 16 kHz ou 24 kHz,
  *   32 Mo max, 10 minutes max. Le M4A doit être converti avant envoi.
  */
+import { defaultLlmFetch } from "./http";
 import {
   LlmProviderError,
   type ChatMessage,
@@ -71,7 +72,7 @@ export function resolveMetaConfig(config: MetaLlmConfig = {}): Required<
       config.transcribeModel ??
       process.env.META_TRANSCRIBE_MODEL ??
       DEFAULT_TRANSCRIBE_MODEL,
-    fetchFn: config.fetchFn ?? fetch,
+    fetchFn: config.fetchFn ?? defaultLlmFetch(),
   };
 }
 

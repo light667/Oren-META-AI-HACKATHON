@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { fr } from "@/i18n/fr";
 import { jsonError, requireOwner } from "@/lib/api";
 import { extractInterviewAnswer } from "@/lib/import/extract";
-import { MetaLlmProvider } from "@/providers/llm/meta";
+import { createLlmProvider } from "@/providers/llm";
 import { z } from "zod";
 
 export const instant = false;
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 
   try {
     const result = await extractInterviewAnswer(
-      new MetaLlmProvider(),
+      createLlmProvider(),
       fr.setup.questions[parsed.data.questionId],
       parsed.data.answer,
     );

@@ -17,6 +17,7 @@
     "smoke": "tsx scripts/smoke.ts",
     "eval": "tsx scripts/eval.ts",
     "check:remote": "tsx scripts/check-remote.ts",
+    "check:llm": "tsx scripts/check-llm.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

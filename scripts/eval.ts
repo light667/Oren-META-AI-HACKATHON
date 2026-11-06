@@ -14,7 +14,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { createHandleMessage, type AssistantReply } from "../src/core/handle-message";
-import { MetaLlmProvider } from "../src/providers/llm/meta";
+import { createLlmProvider } from "../src/providers/llm";
 import { FakeStore } from "../tests/core/fake-store";
 
 for (const file of [".env", ".env.local"]) {
@@ -144,7 +144,7 @@ async function main() {
 
   const store = new FakeStore();
   const businessId = seedDemoRestaurant(store);
-  const handle = createHandleMessage({ store, llm: new MetaLlmProvider() });
+  const handle = createHandleMessage({ store, llm: createLlmProvider() });
 
   console.log(`Évaluation Oren — ${data.questions.length} questions, modèle réel, restaurant « Chez Chef T »`);
   console.log("─".repeat(72));

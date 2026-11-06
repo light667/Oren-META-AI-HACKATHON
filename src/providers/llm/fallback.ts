@@ -42,6 +42,9 @@ export class FallbackLlmProvider implements LlmProvider {
             ? `${provider.name}: ${error.message}${error.status ? ` (HTTP ${error.status})` : ""}${error.code ? ` [${error.code}]` : ""}`
             : `${provider.name}: ${error instanceof Error ? error.message : String(error)}`;
         failures.push(detail);
+        // Trace serveur (journaux Vercel) : quel fournisseur a lâché et
+        // pourquoi. Jamais de clé ni de contenu client dans ce message.
+        console.warn(`[llm] ${label} : échec ${detail.slice(0, 300)} → relais`);
       }
     }
     throw new LlmProviderError(

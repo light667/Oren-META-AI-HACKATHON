@@ -1,11 +1,11 @@
 import type { AssistantDeps } from "@/core/handle-message";
 import { SupabaseAssistantStore } from "@/core/supabase-store";
 import type { BusinessRecord } from "@/core/store";
-import { MetaLlmProvider } from "@/providers/llm/meta";
+import { createLlmProvider } from "@/providers/llm";
 
 /** Dépendances réelles du canal web (serveur uniquement). */
 export function createWebDeps(): AssistantDeps {
-  return { store: new SupabaseAssistantStore(), llm: new MetaLlmProvider() };
+  return { store: new SupabaseAssistantStore(), llm: createLlmProvider() };
 }
 
 export async function resolveBusinessBySlug(

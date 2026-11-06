@@ -58,11 +58,11 @@ let defaultDepsPromise: Promise<AssistantDeps> | null = null;
 async function loadDefaultDeps(): Promise<AssistantDeps> {
   if (!defaultDepsPromise) {
     defaultDepsPromise = (async () => {
-      const [{ SupabaseAssistantStore }, { MetaLlmProvider }] = await Promise.all([
+      const [{ SupabaseAssistantStore }, { createLlmProvider }] = await Promise.all([
         import("./supabase-store"),
-        import("@/providers/llm/meta"),
+        import("@/providers/llm"),
       ]);
-      return { store: new SupabaseAssistantStore(), llm: new MetaLlmProvider() };
+      return { store: new SupabaseAssistantStore(), llm: createLlmProvider() };
     })();
   }
   return defaultDepsPromise;

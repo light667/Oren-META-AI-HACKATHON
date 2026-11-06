@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { fr } from "@/i18n/fr";
 import { jsonError, requireOwner } from "@/lib/api";
 import { extractMenuFromImage } from "@/lib/import/extract";
-import { MetaLlmProvider } from "@/providers/llm/meta";
+import { createLlmProvider } from "@/providers/llm";
 import { z } from "zod";
 
 export const instant = false;
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   if (!parsed.success) return jsonError(400, fr.common.error);
 
   try {
-    const result = await extractMenuFromImage(new MetaLlmProvider(), parsed.data.image);
+    const result = await extractMenuFromImage(createLlmProvider(), parsed.data.image);
     return NextResponse.json(result);
   } catch {
     return jsonError(502, fr.common.error);

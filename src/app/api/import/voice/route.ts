@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { fr } from "@/i18n/fr";
 import { jsonError, requireOwner } from "@/lib/api";
 import { extractInfoFromTranscript } from "@/lib/import/extract";
-import { MetaLlmProvider } from "@/providers/llm/meta";
+import { createLlmProvider } from "@/providers/llm";
 
 export const instant = false;
 
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   if (!(file instanceof File)) return jsonError(400, fr.common.error);
   if (file.size > 30_000_000) return jsonError(400, fr.common.error);
 
-  const llm = new MetaLlmProvider();
+  const llm = createLlmProvider();
   try {
     const data = new Uint8Array(await file.arrayBuffer());
     const transcription = await llm.transcribe({
