@@ -1,5 +1,5 @@
 -- ============================================================================
--- Oren - apply_all.sql (genere le 2026-10-30, ne pas editer a la main)
+-- Oren - apply_all.sql (genere le 2026-11-06, ne pas editer a la main)
 -- Contenu, dans l'ordre : migrations triees par nom, puis le seed.
 -- Usage : Supabase Dashboard > SQL Editor > coller tout ce fichier > Run.
 -- Projet vide : tout executer. Projet deja initialise : n'executer que les
@@ -8,7 +8,7 @@
 -- ============================================================================
 
 -- ============================================================================
--- 1/5 - Migration (supabase/migrations/20261030000100_initial_schema.sql)
+-- 1/6 - Migration (supabase/migrations/20261030000100_initial_schema.sql)
 -- ============================================================================
 -- Oren — schéma initial (multi-entreprises).
 -- Règles appliquées en base : prix FCFA entiers (jamais de décimaux ni de
@@ -303,7 +303,7 @@ create index audit_log_business_id_idx on public.audit_log (business_id);
 create index audit_log_business_created_idx on public.audit_log (business_id, created_at);
 
 -- ============================================================================
--- 2/5 - Migration (supabase/migrations/20261030000200_rls.sql)
+-- 2/6 - Migration (supabase/migrations/20261030000200_rls.sql)
 -- ============================================================================
 -- Oren — Row Level Security : isolation par entreprise sur CHAQUE table.
 --
@@ -527,7 +527,7 @@ create policy audit_log_insert_own on public.audit_log
   with check (business_id = public.staff_business_id());
 
 -- ============================================================================
--- 3/5 - Migration (supabase/migrations/20261030000300_settings_owner_only.sql)
+-- 3/6 - Migration (supabase/migrations/20261030000300_settings_owner_only.sql)
 -- ============================================================================
 -- Oren — les réglages sont réservés au rôle owner.
 -- Un membre du personnel (staff) voit les commandes et le catalogue,
@@ -613,7 +613,7 @@ create policy menu_items_delete_owner on public.menu_items
   using (business_id = public.staff_business_id() and public.staff_role() = 'owner');
 
 -- ============================================================================
--- 4/5 - Migration (supabase/migrations/20261030000400_order_alerts_push.sql)
+-- 4/6 - Migration (supabase/migrations/20261030000400_order_alerts_push.sql)
 -- ============================================================================
 -- Oren — tableau patron temps réel, alertes et prise de contrôle.
 -- Ré-exécutable autant que possible (if exists / if not exists, do blocks).
@@ -697,7 +697,48 @@ end;
 $$;
 
 -- ============================================================================
--- 5/5 - Seed de demonstration (supabase/seed.sql)
+-- 5/6 - Migration (supabase/migrations/20261106000100_firebase_identities.sql)
+-- ============================================================================
+-- Oren — liaison des comptes Firebase Auth aux comptes Supabase.
+-- Firebase gère l'identité (e-mail + mot de passe, vérification d'e-mail,
+-- Google). Chaque compte Firebase vérifié est relié à UN compte
+-- auth.users propre, qui porte toute la RLS existante (auth.uid(),
+-- staff.user_id). Table d'identité, pas table métier : pas de business_id.
+-- Accès : service_role uniquement (route serveur /api/auth/session).
+
+create table if not exists public.auth_identities (
+  id uuid primary key default gen_random_uuid(),
+  firebase_uid text not null unique check (length(firebase_uid) between 1 and 128),
+  user_id uuid not null unique references auth.users (id) on delete cascade,
+  email text not null check (length(email) between 3 and 320),
+  provider text not null default 'password' check (length(provider) between 1 and 64),
+  created_at timestamptz not null default now(),
+  last_sign_in_at timestamptz not null default now()
+);
+
+alter table public.auth_identities enable row level security;
+-- Aucune politique : ni anon ni authenticated n'y ont accès.
+revoke all on public.auth_identities from anon, authenticated;
+grant all on public.auth_identities to service_role;
+
+-- Recherche d'un compte Supabase existant par e-mail (comptes créés avant
+-- la migration, ou invités). service_role uniquement.
+create or replace function public.auth_user_id_by_email(p_email text)
+returns uuid
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select u.id from auth.users u where lower(u.email) = lower(trim(p_email)) limit 1
+$$;
+
+revoke all on function public.auth_user_id_by_email(text) from public;
+revoke all on function public.auth_user_id_by_email(text) from anon, authenticated;
+grant execute on function public.auth_user_id_by_email(text) to service_role;
+
+-- ============================================================================
+-- 6/6 - Seed de demonstration (supabase/seed.sql)
 -- ============================================================================
 -- Oren — entreprise de démonstration (restaurant, Lomé).
 -- Appliqué par `supabase db reset` en local uniquement (jamais en production).

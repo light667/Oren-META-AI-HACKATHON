@@ -24,3 +24,16 @@ describe("authErrorMessage", () => {
     expect(authErrorMessage(new Error("x"), messages)).toBe("GENERIC");
   });
 });
+
+describe("firebaseAuthErrorKey", () => {
+  it("traduit les codes Firebase en messages utiles", async () => {
+    const { firebaseAuthErrorKey } = await import("./auth-error");
+    expect(firebaseAuthErrorKey({ code: "auth/invalid-credential" })).toBe("invalidCredentials");
+    expect(firebaseAuthErrorKey({ code: "auth/email-already-in-use" })).toBe("emailInUse");
+    expect(firebaseAuthErrorKey({ code: "auth/weak-password" })).toBe("weakPassword");
+    expect(firebaseAuthErrorKey({ code: "auth/too-many-requests" })).toBe("rateLimited");
+    expect(firebaseAuthErrorKey({ code: "auth/popup-closed-by-user" })).toBe("cancelled");
+    expect(firebaseAuthErrorKey({ code: "auth/operation-not-allowed" })).toBe("providerDisabled");
+    expect(firebaseAuthErrorKey(new Error("x"))).toBe("generic");
+  });
+});

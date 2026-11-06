@@ -22,7 +22,7 @@ afterAll(async () => {
 });
 
 describe("supabase/apply_all.sql", () => {
-  it("crée les 13 tables avec la RLS activée", async () => {
+  it("crée les 14 tables avec la RLS activée", async () => {
     const result = await db.query<{ tablename: string; rowsecurity: boolean }>(
       `select tablename, rowsecurity from pg_tables where schemaname = 'public' order by tablename`,
     );

@@ -21,3 +21,52 @@ export function authErrorMessage(
 ): string {
   return isRateLimitError(error) ? messages.rateLimited : messages.generic;
 }
+
+/** Clés de message (t.auth.*) pour les erreurs Firebase Auth. */
+export type FirebaseAuthErrorKey =
+  | "invalidCredentials"
+  | "emailInUse"
+  | "weakPassword"
+  | "rateLimited"
+  | "network"
+  | "providerDisabled"
+  | "cancelled"
+  | "generic";
+
+export function firebaseAuthErrorKey(error: unknown): FirebaseAuthErrorKey {
+  const code =
+    error && typeof error === "object" && typeof (error as { code?: unknown }).code === "string"
+      ? (error as { code: string }).code
+      : "";
+  switch (code) {
+    case "auth/invalid-credential":
+    case "auth/invalid-login-credentials":
+    case "auth/wrong-password":
+    case "auth/user-not-found":
+    case "auth/invalid-email":
+    case "auth/user-disabled":
+      return "invalidCredentials";
+    case "auth/email-already-in-use":
+    case "auth/account-exists-with-different-credential":
+      return "emailInUse";
+    case "auth/weak-password":
+    case "auth/password-does-not-meet-requirements":
+      return "weakPassword";
+    case "auth/too-many-requests":
+    case "auth/quota-exceeded":
+      return "rateLimited";
+    case "auth/network-request-failed":
+    case "auth/timeout":
+      return "network";
+    case "auth/operation-not-allowed":
+    case "auth/unauthorized-domain":
+    case "auth/configuration-not-found":
+      return "providerDisabled";
+    case "auth/popup-closed-by-user":
+    case "auth/cancelled-popup-request":
+    case "auth/user-cancelled":
+      return "cancelled";
+    default:
+      return isRateLimitError(error) ? "rateLimited" : "generic";
+  }
+}

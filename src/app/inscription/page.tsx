@@ -7,7 +7,12 @@ import { fr } from "@/i18n/fr";
 
 export const instant = false;
 
-export default function SignupPage() {
+export default async function SignupPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ invitation?: string }>;
+}) {
+  const params = await searchParams;
   return (
     <div className="relative flex min-h-full flex-col justify-between bg-background antialiased">
 
@@ -24,7 +29,7 @@ export default function SignupPage() {
 
       {/* Formulaire centré */}
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-8">
-        <SignupForm />
+        <SignupForm invitation={params.invitation === "1"} />
       </main>
 
       {/* Bas de page minimal */}

@@ -3,7 +3,8 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n/context";
-import { createClient } from "@/lib/supabase/client";
+import { signOut as firebaseSignOut } from "firebase/auth";
+import { getFirebaseAuth, isFirebaseConfigured } from "@/lib/firebase/client";
 import { LogOut } from "lucide-react";
 
 export function SignOutButton() {
@@ -12,7 +13,10 @@ export function SignOutButton() {
 
   async function signOut() {
     try {
-      await createClient().auth.signOut();
+      await Promise.allSettled([
+        fetch("/api/auth/session", { method: "DELETE" }),
+        isFirebaseConfigured ? firebaseSignOut(getFirebaseAuth()) : Promise.resolve(),
+      ]);
     } finally {
       router.push("/connexion");
       router.refresh();

@@ -69,6 +69,8 @@ export const ALL_TABLES = [
   "confirmation_tokens",
   "audit_log",
   "push_subscriptions",
+  // Table d'identité (liaison Firebase → auth.users), service_role seul.
+  "auth_identities",
 ] as const;
 
 const SUPABASE_SHIM = `

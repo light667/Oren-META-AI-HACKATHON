@@ -255,7 +255,7 @@ afterAll(async () => {
 });
 
 describe("RLS activée sur chaque table", () => {
-  it("rowsecurity = true pour les 13 tables, sans exception", async () => {
+  it("rowsecurity = true pour les 14 tables, sans exception", async () => {
     const result = await db.query<{ tablename: string; rowsecurity: boolean }>(
       `select tablename, rowsecurity from pg_tables where schemaname = 'public' order by tablename`,
     );

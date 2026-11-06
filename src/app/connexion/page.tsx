@@ -10,7 +10,7 @@ export const instant = false;
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ erreur?: string }>;
+  searchParams: Promise<{ erreur?: string; verifie?: string }>;
 }) {
   const params = await searchParams;
   return (
@@ -31,7 +31,7 @@ export default async function LoginPage({
 
       {/* Formulaire centré */}
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-8">
-        <LoginForm showError={params.erreur === "lien"} />
+        <LoginForm showError={params.erreur === "lien"} verified={params.verifie === "1"} />
       </main>
 
       {/* Bas de page minimal */}
