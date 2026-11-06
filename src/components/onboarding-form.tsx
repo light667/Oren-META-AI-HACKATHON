@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useI18n } from "@/i18n/context";
 import { onboardingSchema } from "@/lib/validation";
-import { ArrowRight, Sparkles, AlertCircle } from "lucide-react";
+import { ArrowRight, AlertCircle } from "lucide-react";
 
 interface Props {
   initial: { businessName: string; slug: string; phone: string };
@@ -81,10 +81,6 @@ export function OnboardingForm({ initial, invitedBusiness }: Props) {
   return (
     <div className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8 shadow-xl shadow-black/5 backdrop-blur-md">
       <div className="mb-6 space-y-2">
-        <div className="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand/10 px-3 py-0.5 text-xs font-semibold text-brand">
-          <Sparkles className="h-3 w-3" />
-          <span>Configuration rapide</span>
-        </div>
         <h1 className="text-2xl font-bold tracking-tight text-foreground">{t.onboarding.title}</h1>
         <p className="text-sm text-muted-foreground leading-relaxed">{t.onboarding.body}</p>
       </div>

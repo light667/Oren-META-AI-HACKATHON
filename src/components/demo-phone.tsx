@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { LogoMark } from "@/components/logo";
 import { useI18n } from "@/i18n/context";
 import { cn } from "@/lib/utils";
-import { BadgeCheck, CheckCircle2, ChevronLeft, Phone, Send, Sparkles } from "lucide-react";
+import { BadgeCheck, CheckCircle2, ChevronLeft, Phone, Send } from "lucide-react";
 
 /**
  * Téléphone de démonstration : rejoue une vraie conversation de commande
@@ -109,7 +109,6 @@ export function DemoPhone({ className }: { className?: string }) {
 
           {/* Mention IA (transparence) */}
           <p className="flex items-center justify-center gap-1 px-3 pt-3 text-[10px] font-medium text-muted-foreground">
-            <Sparkles className="h-3 w-3 text-brand" />
             {phone.aiNotice}
           </p>
 

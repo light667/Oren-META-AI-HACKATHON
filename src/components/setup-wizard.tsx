@@ -16,7 +16,6 @@ import {
   type RestaurantDraft,
 } from "@/lib/import/draft";
 import {
-  Sparkles,
   Camera,
   Mic,
   HelpCircle,
@@ -166,10 +165,6 @@ export function SetupWizard({ slug }: { slug: string }) {
     <div className="space-y-8">
       {/* En-tête */}
       <div className="space-y-2">
-        <div className="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand/10 px-3 py-0.5 text-xs font-semibold text-brand">
-          <Sparkles className="h-3.5 w-3.5" />
-          <span>Meta Multimodal AI</span>
-        </div>
         <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
           {t.setup.title}
         </h1>

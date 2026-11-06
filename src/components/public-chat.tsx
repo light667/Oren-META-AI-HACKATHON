@@ -9,7 +9,6 @@ import {
   ShieldCheck,
   CheckCircle2,
   Clock,
-  Sparkles,
   MessageSquare,
   UtensilsCrossed,
   ShoppingBag,

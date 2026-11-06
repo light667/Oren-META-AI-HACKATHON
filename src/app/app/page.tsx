@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CheckCircle2, Circle, ArrowRight, ExternalLink, Sparkles, Store } from "lucide-react";
+import { CheckCircle2, Circle, ArrowRight, ExternalLink, Store } from "lucide-react";
 import { fr } from "@/i18n/fr";
 import { getStaffContext } from "@/lib/server-context";
 import { createClient } from "@/lib/supabase/server";
@@ -61,7 +61,6 @@ export default async function OwnerHomePage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-border/60 pb-6">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-brand" />
               <h2 className="font-heading text-xl font-bold tracking-tight text-foreground">
                 {fr.ownerHome.checklistTitle}
               </h2>

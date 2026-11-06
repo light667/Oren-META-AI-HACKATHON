@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import {
   ArrowRight,
   BellRing,
+  Bot,
   Camera,
   ChevronDown,
   Hand,
@@ -14,7 +15,6 @@ import {
   Play,
   ReceiptText,
   ShieldCheck,
-  Sparkles,
   UserRound,
 } from "lucide-react";
 import { PublicFooter, PublicHeader } from "@/components/public-chrome";
@@ -33,7 +33,7 @@ const DemoPhone = dynamic(
 
 const STEP_ICONS = [Camera, ReceiptText, Link2];
 const FEATURE_ICONS = [Mic, ReceiptText, BellRing, Hand];
-const TRUST_ICONS = [ShieldCheck, Lock, Sparkles];
+const TRUST_ICONS = [ShieldCheck, Lock, Bot];
 
 /* Boutons de la charte : orange = action principale, contour violet = secondaire */
 const ctaClass =
@@ -262,7 +262,7 @@ export default function Home() {
           <Reveal><SectionHeading eyebrow={L.featuresEyebrow} title={L.featuresTitle} sub={L.featuresSub} /></Reveal>
           <div className="grid gap-6 md:grid-cols-2">
             {L.features.map((feature, index) => {
-              const Icon = FEATURE_ICONS[index] ?? Sparkles;
+              const Icon = FEATURE_ICONS[index] ?? Mic;
               const accent = index === 1;
               return (
                 <Reveal key={feature.title} delay={index * 90} className="h-full">
@@ -302,7 +302,7 @@ export default function Home() {
             <Reveal><SectionHeading eyebrow={L.stepsEyebrow} title={L.howTitle} sub={L.howSub} light /></Reveal>
             <ol className="grid gap-6 md:grid-cols-3">
               {L.steps.map((step, index) => {
-                const Icon = STEP_ICONS[index] ?? Sparkles;
+                const Icon = STEP_ICONS[index] ?? Camera;
                 return (
                   <Reveal
                     as="li"
