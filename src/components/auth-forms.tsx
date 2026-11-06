@@ -204,10 +204,7 @@ export function SignupForm() {
   return (
     <div className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8 shadow-xl shadow-black/5 backdrop-blur-md">
       <div className="mb-6 space-y-2">
-        <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-0.5 text-xs font-semibold text-primary">
-          <Sparkles className="h-3 w-3" />
-          <span>Prêt en 5 minutes</span>
-        </div>
+        
         <h1 className="text-2xl font-bold tracking-tight text-foreground">{t.auth.signupTitle}</h1>
         <p className="text-sm text-muted-foreground leading-relaxed">{t.auth.signupBody}</p>
       </div>
