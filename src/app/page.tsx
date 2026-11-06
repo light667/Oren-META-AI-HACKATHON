@@ -175,7 +175,7 @@ export default function Home() {
           </div>
 
           {/* Scène de démonstration : aplat carbone, téléphone centré, coupé en bas */}
-          <div className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
+          <div className="mx-auto max-w-6xl px-4 pb-10 sm:px-6">
             <figure
               className="animate-fade-up shadow-hard-lg relative overflow-hidden rounded-xl border-2 border-ink bg-zinc-900 px-4 pt-10 sm:pt-14"
               style={{ animationDelay: "300ms" }}
@@ -233,7 +233,7 @@ export default function Home() {
         </section>
 
         {/* Fonctionnalités : cartes franches, ombre signature */}
-        <section className="mx-auto max-w-6xl space-y-14 px-4 py-24 sm:px-6">
+        <section className="mx-auto max-w-6xl space-y-14 px-4 pb-24 pt-10 sm:px-6">
           <Reveal><SectionHeading eyebrow={L.featuresEyebrow} title={L.featuresTitle} sub={L.featuresSub} /></Reveal>
           <div className="grid gap-6 md:grid-cols-2">
             {L.features.map((feature, index) => {
