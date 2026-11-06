@@ -43,3 +43,5 @@ next-env.d.ts
 
 demo/
 .tmp-build/
+# Outils locaux (Claude Code, aperçu)
+.claude/

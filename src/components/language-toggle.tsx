@@ -17,7 +17,7 @@ export function LanguageToggle({ className = "" }: { className?: string }) {
         onClick={() => setLocale("fr")}
         className={`flex items-center gap-1 rounded-full px-2.5 py-1 font-semibold transition-all ${
           locale === "fr"
-            ? "bg-[#0ebb7c] text-white shadow-xs"
+            ? "bg-brand text-brand-foreground shadow-xs"
             : "text-muted-foreground hover:text-foreground"
         }`}
         title="Français"
@@ -29,7 +29,7 @@ export function LanguageToggle({ className = "" }: { className?: string }) {
         onClick={() => setLocale("en")}
         className={`flex items-center gap-1 rounded-full px-2.5 py-1 font-semibold transition-all ${
           locale === "en"
-            ? "bg-[#0ebb7c] text-white shadow-xs"
+            ? "bg-brand text-brand-foreground shadow-xs"
             : "text-muted-foreground hover:text-foreground"
         }`}
         title="English"

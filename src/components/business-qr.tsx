@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import QRCode from "qrcode";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -10,24 +10,27 @@ import { Copy, Check, Download, ExternalLink, QrCode } from "lucide-react";
 
 /**
  * Présentation du QR Code et du lien public (Tâche D5 / docs/DESIGN.md).
- * Sans phrase en double, sans soulignement sur le Q, URL depuis NEXT_PUBLIC_APP_URL.
+ * URL publique : NEXT_PUBLIC_SITE_URL (domaine de prod), sinon l'origine de la page.
  */
+const noopSubscribe = () => () => {};
+
 export function BusinessQr({ slug, businessName }: { slug: string; businessName: string }) {
   const { t } = useI18n();
   const [dataUrl, setDataUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
-  const initialBase = appUrl ? appUrl.replace(/\/+$/, "") : (typeof window !== "undefined" ? window.location.origin : "");
-  const [publicUrl, setPublicUrl] = useState(() => `${initialBase}/${slug}`);
+  // Domaine public configuré (prod) ; sinon l'origine de la page.
+  const configured = (process.env.NEXT_PUBLIC_SITE_URL ?? "").trim().replace(/\/+$/, "");
+  const origin = useSyncExternalStore(
+    noopSubscribe,
+    () => window.location.origin,
+    () => "",
+  );
+  const publicUrl = `${configured || origin}/${slug}`;
 
   useEffect(() => {
-    const base = process.env.NEXT_PUBLIC_APP_URL
-      ? process.env.NEXT_PUBLIC_APP_URL.replace(/\/+$/, "")
-      : window.location.origin;
-    const url = `${base}/${slug}`;
-    setPublicUrl(url);
-
+    if (!configured && !origin) return;
+    const url = publicUrl;
     let cancelled = false;
     QRCode.toDataURL(url, {
       width: 720,
@@ -45,7 +48,7 @@ export function BusinessQr({ slug, businessName }: { slug: string; businessName:
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [publicUrl, configured, origin]);
 
   function copyLink() {
     navigator.clipboard.writeText(publicUrl);

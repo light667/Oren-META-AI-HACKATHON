@@ -21,7 +21,6 @@ export function VoiceRecorder({
   const [recording, setRecording] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [lastBlob, setLastBlob] = useState<Blob | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const contextRef = useRef<AudioContext | null>(null);
@@ -42,7 +41,6 @@ export function VoiceRecorder({
       URL.revokeObjectURL(audioUrl);
       setAudioUrl(null);
     }
-    setLastBlob(null);
     setSeconds(0);
 
     try {
@@ -64,7 +62,7 @@ export function VoiceRecorder({
         setSeconds((prev) => prev + 1);
       }, 1000);
     } catch {
-      setError("Impossible d'accéder au microphone. Vérifiez vos autorisations.");
+      setError(t.setup.micDenied);
     }
   }
 
@@ -87,7 +85,6 @@ export function VoiceRecorder({
     }
     const rate = context?.sampleRate ?? 48000;
     const wavBlob = encodeWavPcm16(downsample(merged, rate, 24000), 24000);
-    setLastBlob(wavBlob);
     const url = URL.createObjectURL(wavBlob);
     setAudioUrl(url);
     onRecorded(wavBlob);
@@ -96,7 +93,6 @@ export function VoiceRecorder({
   function retry() {
     setError(null);
     setAudioUrl(null);
-    setLastBlob(null);
     setSeconds(0);
     void start();
   }
@@ -118,7 +114,9 @@ export function VoiceRecorder({
             className="h-11 rounded-xl px-5 text-xs font-bold shadow-md shadow-destructive/20 animate-pulse"
           >
             <Square className="mr-2 h-4 w-4 fill-current" />
-            <span>Arrêter l'enregistrement ({formatDuration(seconds)})</span>
+            <span>
+              {t.setup.recordStop} ({formatDuration(seconds)})
+            </span>
           </Button>
         ) : (
           <Button
@@ -128,7 +126,7 @@ export function VoiceRecorder({
             className="h-11 rounded-xl bg-primary px-5 text-xs font-bold text-primary-foreground shadow-md shadow-primary/20 hover:opacity-90 active:scale-95 transition-all"
           >
             <Mic className="mr-2 h-4 w-4" />
-            <span>{audioUrl ? "Réenregistrer un message vocal" : "Enregistrer un message vocal"}</span>
+            <span>{audioUrl ? t.setup.recordAgain : t.setup.recordVoice}</span>
           </Button>
         )}
 
