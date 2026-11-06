@@ -11,10 +11,6 @@ export function AuthShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative isolate flex min-h-dvh flex-col bg-background text-foreground">
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px] bg-[radial-gradient(55%_60%_at_50%_0%,color-mix(in_oklab,var(--brand)_18%,transparent),transparent_70%)]"
-        aria-hidden
-      />
-      <div
         className="bg-grid pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] [mask-image:radial-gradient(60%_60%_at_50%_0%,#000_20%,transparent_75%)]"
         aria-hidden
       />

@@ -68,7 +68,7 @@ export function OnboardingForm({ initial, invitedBusiness }: Props) {
           )}
           <Button
             type="submit"
-            className="h-11 w-full rounded-xl bg-[#0ebb7c] font-semibold text-white shadow-md shadow-[#0ebb7c]/20 hover:bg-[#0ca66e] active:scale-95 transition-all"
+            className="h-11 w-full rounded-xl bg-brand font-semibold text-white shadow-md shadow-brand/20 hover:bg-brand-strong active:scale-95 transition-all"
             disabled={busy}
           >
             {busy ? t.common.loading : t.onboarding.invitedSubmit}
@@ -81,7 +81,7 @@ export function OnboardingForm({ initial, invitedBusiness }: Props) {
   return (
     <div className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8 shadow-xl shadow-black/5 backdrop-blur-md">
       <div className="mb-6 space-y-2">
-        <div className="inline-flex items-center gap-1.5 rounded-full border border-[#0ebb7c]/30 bg-[#0ebb7c]/10 px-3 py-0.5 text-xs font-semibold text-[#0ebb7c]">
+        <div className="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand/10 px-3 py-0.5 text-xs font-semibold text-brand">
           <Sparkles className="h-3 w-3" />
           <span>Configuration rapide</span>
         </div>
@@ -99,7 +99,7 @@ export function OnboardingForm({ initial, invitedBusiness }: Props) {
             required
             value={form.businessName}
             onChange={set("businessName")}
-            className="h-11 rounded-xl border-border/80 focus-visible:ring-[#0ebb7c]"
+            className="h-11 rounded-xl border-border/80 focus-visible:ring-brand"
           />
         </div>
 
@@ -114,7 +114,7 @@ export function OnboardingForm({ initial, invitedBusiness }: Props) {
               required
               value={form.slug}
               onChange={(e) => setForm((p) => ({ ...p, slug: e.target.value.toLowerCase() }))}
-              className="h-11 rounded-xl pl-16 border-border/80 focus-visible:ring-[#0ebb7c]"
+              className="h-11 rounded-xl pl-16 border-border/80 focus-visible:ring-brand"
             />
           </div>
           <p className="text-xs text-muted-foreground">{t.auth.slugHelp}</p>
@@ -130,7 +130,7 @@ export function OnboardingForm({ initial, invitedBusiness }: Props) {
             required
             value={form.phone}
             onChange={set("phone")}
-            className="h-11 rounded-xl border-border/80 focus-visible:ring-[#0ebb7c]"
+            className="h-11 rounded-xl border-border/80 focus-visible:ring-brand"
           />
         </div>
 
@@ -143,7 +143,7 @@ export function OnboardingForm({ initial, invitedBusiness }: Props) {
 
         <Button
           type="submit"
-          className="h-11 w-full rounded-xl bg-[#0ebb7c] font-semibold text-white shadow-md shadow-[#0ebb7c]/20 hover:bg-[#0ca66e] active:scale-95 transition-all"
+          className="h-11 w-full rounded-xl bg-brand font-semibold text-white shadow-md shadow-brand/20 hover:bg-brand-strong active:scale-95 transition-all"
           disabled={busy}
         >
           {busy ? (

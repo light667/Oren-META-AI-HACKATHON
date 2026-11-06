@@ -108,12 +108,10 @@ export function DemoPhone({ className }: { className?: string }) {
           </div>
 
           {/* Mention IA (transparence) */}
-          <div className="flex justify-center px-3 pt-3">
-            <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-[10px] font-medium text-muted-foreground">
-              <Sparkles className="h-3 w-3 text-brand" />
-              {phone.aiNotice}
-            </span>
-          </div>
+          <p className="flex items-center justify-center gap-1 px-3 pt-3 text-[10px] font-medium text-muted-foreground">
+            <Sparkles className="h-3 w-3 text-brand" />
+            {phone.aiNotice}
+          </p>
 
           {/* Fil */}
           <div

@@ -172,7 +172,7 @@ export function BusinessManager({
         {/* Horaires d'ouverture */}
         <div className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8 space-y-5 shadow-xs">
           <div className="flex items-center gap-2.5 border-b border-border/60 pb-4">
-            <Clock className="h-5 w-5 text-[#0ebb7c]" />
+            <Clock className="h-5 w-5 text-brand" />
             <div>
               <h2 className="font-heading text-lg font-bold text-foreground">
                 {t.business.hoursTitle}
@@ -203,7 +203,7 @@ export function BusinessManager({
         {/* Adresse et Règles */}
         <div className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8 space-y-4 shadow-xs">
           <div className="flex items-center gap-2.5 border-b border-border/60 pb-4">
-            <Store className="h-5 w-5 text-[#0ebb7c]" />
+            <Store className="h-5 w-5 text-brand" />
             <h2 className="font-heading text-lg font-bold text-foreground">
               Coordonnées & Règles
             </h2>
@@ -258,12 +258,12 @@ export function BusinessManager({
               <Button
                 type="submit"
                 disabled={busy}
-                className="h-10 rounded-xl bg-[#0ebb7c] px-6 text-xs font-bold text-white hover:bg-[#0ca66e]"
+                className="h-10 rounded-xl bg-brand px-6 text-xs font-bold text-white hover:bg-brand-strong"
               >
                 {busy ? t.common.saving : t.common.save}
               </Button>
               {saved && (
-                <span className="flex items-center gap-1 text-xs text-[#0ebb7c] font-semibold">
+                <span className="flex items-center gap-1 text-xs text-brand font-semibold">
                   <Check className="h-3.5 w-3.5" />
                   <span>{t.common.saved}</span>
                 </span>
@@ -276,7 +276,7 @@ export function BusinessManager({
       {/* Zones de livraison */}
       <div className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8 space-y-6 shadow-xs">
         <div className="flex items-center gap-2.5 border-b border-border/60 pb-4">
-          <MapPin className="h-5 w-5 text-[#0ebb7c]" />
+          <MapPin className="h-5 w-5 text-brand" />
           <div>
             <h2 className="font-heading text-lg font-bold text-foreground">
               {t.business.zonesTitle}
@@ -312,14 +312,14 @@ export function BusinessManager({
                 placeholder="500"
                 value={zoneForm.fee}
                 onChange={(e) => setZoneForm((p) => ({ ...p, fee: e.target.value }))}
-                className="h-9 rounded-xl text-xs font-bold text-[#0ebb7c]"
+                className="h-9 rounded-xl text-xs font-bold text-brand"
               />
             </div>
 
             <Button
               type="submit"
               disabled={busy}
-              className="h-9 rounded-xl bg-[#0ebb7c] px-4 text-xs font-bold text-white hover:bg-[#0ca66e]"
+              className="h-9 rounded-xl bg-brand px-4 text-xs font-bold text-white hover:bg-brand-strong"
             >
               <Plus className="mr-1 h-3.5 w-3.5" />
               {t.business.zoneAdd}
@@ -338,7 +338,7 @@ export function BusinessManager({
               >
                 <div className="flex items-center gap-3">
                   <span className="font-bold text-sm text-foreground">{zone.neighborhood}</span>
-                  <span className="rounded-full bg-[#0ebb7c]/10 px-2.5 py-0.5 text-xs font-extrabold text-[#0ebb7c]">
+                  <span className="rounded-full bg-brand/10 px-2.5 py-0.5 text-xs font-extrabold text-brand">
                     {formatFcfa(zone.fee_fcfa)}
                   </span>
                 </div>

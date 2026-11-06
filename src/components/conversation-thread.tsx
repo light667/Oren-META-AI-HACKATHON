@@ -139,7 +139,7 @@ export function ConversationThread({
               {paused ? (
                 <span className="text-amber-500 font-semibold">{t.conversations.pausedBadge}</span>
               ) : (
-                <span className="text-[#0ebb7c] font-semibold">Assistant IA actif</span>
+                <span className="text-brand font-semibold">Assistant IA actif</span>
               )}
             </p>
           </div>
@@ -151,7 +151,7 @@ export function ConversationThread({
             size="sm"
             onClick={resume}
             disabled={busy}
-            className="h-8 rounded-xl bg-[#0ebb7c] px-3 text-xs font-bold text-white hover:bg-[#0ca66e]"
+            className="h-8 rounded-xl bg-brand px-3 text-xs font-bold text-white hover:bg-brand-strong"
           >
             <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
             {t.conversations.resumeAssistant}
@@ -183,7 +183,7 @@ export function ConversationThread({
               className={`flex flex-col ${isHuman ? "items-end" : "items-start"}`}
             >
               <div className="mb-1 flex items-center gap-1.5 text-[10px] text-muted-foreground px-1">
-                {isAssistant && <Bot className="h-3 w-3 text-[#0ebb7c]" />}
+                {isAssistant && <Bot className="h-3 w-3 text-brand" />}
                 {isHuman && <User className="h-3 w-3 text-primary" />}
                 <span className="font-semibold">
                   {isHuman
@@ -204,7 +204,7 @@ export function ConversationThread({
               <div
                 className={`max-w-[85%] rounded-2xl px-4 py-2.5 leading-relaxed shadow-xs ${
                   isHuman
-                    ? "rounded-tr-xs bg-[#0ebb7c] text-white"
+                    ? "rounded-tr-xs bg-brand text-white"
                     : isCustomer
                       ? "rounded-tl-xs bg-secondary text-foreground"
                       : "rounded-tl-xs border border-border/80 bg-card text-foreground"
@@ -235,7 +235,7 @@ export function ConversationThread({
           <Button
             type="submit"
             disabled={busy || !draft.trim()}
-            className="h-10 rounded-xl bg-[#0ebb7c] px-4 font-bold text-white hover:bg-[#0ca66e]"
+            className="h-10 rounded-xl bg-brand px-4 font-bold text-white hover:bg-brand-strong"
           >
             <Send className="h-4 w-4" />
           </Button>

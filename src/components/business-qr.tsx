@@ -80,7 +80,7 @@ export function BusinessQr({ slug, businessName }: { slug: string; businessName:
         <div className="lg:col-span-5 flex justify-center">
           <div className="relative w-full max-w-xs overflow-hidden rounded-3xl border border-border/80 bg-card p-6 text-center text-foreground shadow-2xl">
             <div className="flex items-center justify-center gap-2 pb-4">
-              <LogoMark className="h-6 w-6 text-[#0ebb7c]" />
+              <LogoMark className="h-6 w-6 text-brand" />
               <span className="font-heading text-base font-extrabold tracking-tight text-foreground no-underline">
                 Oren
               </span>

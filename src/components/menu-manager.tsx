@@ -161,7 +161,7 @@ export function MenuManager({ items, canEdit }: { items: MenuItemData[]; canEdit
           <Button
             type="button"
             onClick={openCreate}
-            className="h-10 rounded-xl bg-[#0ebb7c] px-4 font-bold text-white shadow-md shadow-[#0ebb7c]/20 hover:bg-[#0ca66e] active:scale-95 transition-all"
+            className="h-10 rounded-xl bg-brand px-4 font-bold text-white shadow-md shadow-brand/20 hover:bg-brand-strong active:scale-95 transition-all"
           >
             <Plus className="mr-1.5 h-4 w-4" />
             {t.menu.addItem}
@@ -192,7 +192,7 @@ export function MenuManager({ items, canEdit }: { items: MenuItemData[]; canEdit
               onClick={() => setActiveCategory(cat)}
               className={`h-8 shrink-0 rounded-full px-3.5 text-xs font-semibold transition-all ${
                 activeCategory === cat
-                  ? "bg-[#0ebb7c] text-white shadow-xs"
+                  ? "bg-brand text-white shadow-xs"
                   : "bg-secondary text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
               }`}
             >
@@ -219,10 +219,10 @@ export function MenuManager({ items, canEdit }: { items: MenuItemData[]; canEdit
               >
                 <div className="space-y-2.5">
                   <div className="flex items-start justify-between gap-2">
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0ebb7c]/10 font-heading text-base font-bold text-[#0ebb7c]">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 font-heading text-base font-bold text-brand">
                       {item.name.charAt(0).toUpperCase()}
                     </span>
-                    <p className="font-extrabold text-base text-[#0ebb7c]">
+                    <p className="font-extrabold text-base text-brand">
                       {formatFcfa(item.price_fcfa)}
                     </p>
                   </div>
@@ -324,7 +324,7 @@ export function MenuManager({ items, canEdit }: { items: MenuItemData[]; canEdit
                   placeholder={t.menu.pricePlaceholder}
                   value={draft.price}
                   onChange={set("price")}
-                  className="h-10 rounded-xl font-bold text-[#0ebb7c]"
+                  className="h-10 rounded-xl font-bold text-brand"
                 />
               </div>
             </div>
@@ -373,7 +373,7 @@ export function MenuManager({ items, canEdit }: { items: MenuItemData[]; canEdit
               <Button
                 type="submit"
                 disabled={busy}
-                className="rounded-xl bg-[#0ebb7c] text-xs font-bold text-white hover:bg-[#0ca66e]"
+                className="rounded-xl bg-brand text-xs font-bold text-white hover:bg-brand-strong"
               >
                 {busy ? t.common.saving : t.common.save}
               </Button>

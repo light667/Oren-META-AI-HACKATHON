@@ -36,8 +36,8 @@ export default async function OwnerHomePage() {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-[#0ebb7c] animate-pulse" />
-            <span className="text-xs font-bold uppercase tracking-wider text-[#0ebb7c]">En service</span>
+            <span className="h-2 w-2 rounded-full bg-brand animate-pulse" />
+            <span className="text-xs font-bold uppercase tracking-wider text-brand">En service</span>
           </div>
           <h1 className="font-heading text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
             {fr.ownerHome.title}
@@ -49,9 +49,9 @@ export default async function OwnerHomePage() {
         <Link
           href={`/${slug}`}
           target="_blank"
-          className="inline-flex h-10 items-center gap-2 rounded-xl border border-border/70 bg-card px-4 text-xs font-semibold text-foreground transition-all hover:border-[#0ebb7c]/50 hover:bg-secondary"
+          className="inline-flex h-10 items-center gap-2 rounded-xl border border-border/70 bg-card px-4 text-xs font-semibold text-foreground transition-all hover:border-brand/50 hover:bg-secondary"
         >
-          <ExternalLink className="h-3.5 w-3.5 text-[#0ebb7c]" />
+          <ExternalLink className="h-3.5 w-3.5 text-brand" />
           <span>{fr.ownerHome.viewPublic}</span>
         </Link>
       </div>
@@ -61,7 +61,7 @@ export default async function OwnerHomePage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-border/60 pb-6">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-[#0ebb7c]" />
+              <Sparkles className="h-4 w-4 text-brand" />
               <h2 className="font-heading text-xl font-bold tracking-tight text-foreground">
                 {fr.ownerHome.checklistTitle}
               </h2>
@@ -81,7 +81,7 @@ export default async function OwnerHomePage() {
               aria-valuemax={fr.ownerHome.checklist.length}
             >
               <div
-                className="h-full rounded-full bg-[#0ebb7c] transition-all duration-500"
+                className="h-full rounded-full bg-brand transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -100,21 +100,21 @@ export default async function OwnerHomePage() {
                   className={`group flex items-center justify-between rounded-2xl border p-4 text-sm font-semibold transition-all duration-200 ${
                     done
                       ? "border-border/40 bg-secondary/20 text-muted-foreground"
-                      : "border-border/80 bg-card/60 text-foreground hover:border-[#0ebb7c]/60 hover:bg-secondary/40 shadow-xs"
+                      : "border-border/80 bg-card/60 text-foreground hover:border-brand/60 hover:bg-secondary/40 shadow-xs"
                   }`}
                 >
                   <div className="flex items-center gap-3.5">
                     {done ? (
-                      <CheckCircle2 className="h-5 w-5 shrink-0 text-[#0ebb7c]" aria-hidden />
+                      <CheckCircle2 className="h-5 w-5 shrink-0 text-brand" aria-hidden />
                     ) : (
-                      <Circle className="h-5 w-5 shrink-0 text-muted-foreground/60 group-hover:text-[#0ebb7c]" aria-hidden />
+                      <Circle className="h-5 w-5 shrink-0 text-muted-foreground/60 group-hover:text-brand" aria-hidden />
                     )}
                     <span className={done ? "line-through text-muted-foreground/70" : ""}>
                       {item.label}
                     </span>
                   </div>
 
-                  <ArrowRight className="h-4 w-4 text-muted-foreground/50 transition-transform group-hover:translate-x-1 group-hover:text-[#0ebb7c]" />
+                  <ArrowRight className="h-4 w-4 text-muted-foreground/50 transition-transform group-hover:translate-x-1 group-hover:text-brand" />
                 </Link>
               </li>
             );
@@ -125,7 +125,7 @@ export default async function OwnerHomePage() {
         <div className="mt-6 flex flex-wrap gap-3 border-t border-border/60 pt-6">
           <Link
             href="/app/commandes"
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#0ebb7c] px-6 text-sm font-bold text-white shadow-md shadow-[#0ebb7c]/20 hover:bg-[#0ca66e] active:scale-95 transition-all"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-brand px-6 text-sm font-bold text-white shadow-md shadow-brand/20 hover:bg-brand-strong active:scale-95 transition-all"
           >
             <span>{fr.ownerHome.goOrders}</span>
             <ArrowRight className="h-4 w-4" />

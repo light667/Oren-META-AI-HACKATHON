@@ -83,7 +83,7 @@ export function TeamManager({
       {/* Liste des membres actuels */}
       <div className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8 space-y-5 shadow-xs">
         <div className="flex items-center gap-2.5 border-b border-border/60 pb-4">
-          <Users className="h-5 w-5 text-[#0ebb7c]" />
+          <Users className="h-5 w-5 text-brand" />
           <h2 className="font-heading text-lg font-bold text-foreground">
             {t.team.membersTitle}
           </h2>
@@ -113,7 +113,7 @@ export function TeamManager({
                   variant={member.role === "owner" ? "default" : "secondary"}
                   className={
                     member.role === "owner"
-                      ? "bg-[#0ebb7c] text-white text-[10px] font-bold"
+                      ? "bg-brand text-white text-[10px] font-bold"
                       : "text-[10px] text-muted-foreground"
                   }
                 >
@@ -129,7 +129,7 @@ export function TeamManager({
       {canInvite && (
         <div className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8 space-y-5 shadow-xs">
           <div className="flex items-center gap-2.5 border-b border-border/60 pb-4">
-            <UserPlus className="h-5 w-5 text-[#0ebb7c]" />
+            <UserPlus className="h-5 w-5 text-brand" />
             <div>
               <h2 className="font-heading text-lg font-bold text-foreground">
                 {t.team.inviteTitle}
@@ -172,13 +172,13 @@ export function TeamManager({
             <Button
               type="submit"
               disabled={busy}
-              className="h-10 rounded-xl bg-[#0ebb7c] px-6 text-xs font-bold text-white shadow-md shadow-[#0ebb7c]/20 hover:bg-[#0ca66e]"
+              className="h-10 rounded-xl bg-brand px-6 text-xs font-bold text-white shadow-md shadow-brand/20 hover:bg-brand-strong"
             >
               {busy ? t.common.loading : t.team.inviteSubmit}
             </Button>
 
             {sent && (
-              <p className="flex items-center gap-1.5 text-xs text-[#0ebb7c] font-semibold">
+              <p className="flex items-center gap-1.5 text-xs text-brand font-semibold">
                 <Check className="h-4 w-4" />
                 <span>{t.team.inviteSent}</span>
               </p>

@@ -125,7 +125,7 @@ export function useCompleteSignIn() {
 
 export function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative rounded-3xl border border-border/70 bg-card/90 p-6 shadow-2xl shadow-black/5 backdrop-blur-xl sm:p-8">
+    <div className="shadow-hard-lg relative rounded-xl border-2 border-ink bg-card p-6 sm:p-8">
       {children}
     </div>
   );
@@ -154,7 +154,7 @@ export function SubmitButton({ busy, children }: { busy: boolean; children: Reac
     <Button
       type="submit"
       disabled={busy}
-      className="h-11 w-full rounded-xl font-semibold shadow-md shadow-primary/20 transition-all active:scale-[0.98]"
+      className="hover-press shadow-hard h-11 w-full rounded-lg border-2 border-ink bg-flame font-semibold text-white hover:bg-flame"
     >
       {busy ? (
         <span className="flex items-center gap-2">
@@ -376,7 +376,7 @@ function VerifyEmailCard({ user, onBack }: { user: FirebaseUser; onBack: () => v
 
   return (
     <Shell>
-      <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+      <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-lg bg-brand-soft text-brand">
         <MailCheck className="h-7 w-7" />
       </div>
       <h1 className="text-center text-2xl font-bold tracking-tight">{t.auth.verifyTitle}</h1>
@@ -419,7 +419,7 @@ function NotConfigured({ title }: { title: string }) {
   const { t } = useI18n();
   return (
     <Shell>
-      <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+      <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
       <p className="mt-3 text-sm text-muted-foreground">{t.auth.notConfigured}</p>
     </Shell>
   );
@@ -500,7 +500,7 @@ export function LoginForm({ showError, verified }: { showError: boolean; verifie
   return (
     <Shell>
       <div className="mb-6 space-y-2">
-        <h1 className="text-2xl font-bold tracking-tight">{t.auth.loginTitle}</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t.auth.loginTitle}</h1>
         <p className="text-sm leading-relaxed text-muted-foreground">{t.auth.loginBody}</p>
       </div>
 
@@ -645,7 +645,7 @@ export function SignupForm({ invitation = false }: { invitation?: boolean }) {
   return (
     <Shell>
       <div className="mb-6 space-y-2">
-        <h1 className="text-2xl font-bold tracking-tight">
+        <h1 className="text-3xl font-bold tracking-tight">
           {invitation ? t.auth.inviteSignupTitle : t.auth.signupTitle}
         </h1>
         <p className="text-sm leading-relaxed text-muted-foreground">

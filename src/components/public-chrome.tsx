@@ -19,7 +19,7 @@ export function PublicHeader() {
   const { t } = useI18n();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/75 backdrop-blur-xl backdrop-saturate-150 transition-colors">
+    <header className="sticky top-0 z-50 w-full border-b-2 border-ink bg-background/90 backdrop-blur-md transition-colors">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         {/* Logo */}
         <Link
@@ -27,7 +27,7 @@ export function PublicHeader() {
           aria-label={t.nav.home}
           className="shrink-0 transition-transform hover:scale-[1.02] active:scale-95"
         >
-          <Logo markClassName="h-7 w-7 text-brand" wordmarkClassName="font-heading text-xl font-extrabold tracking-tight text-foreground" />
+          <Logo markClassName="h-7 w-7 text-brand" wordmarkClassName="font-heading text-xl font-bold tracking-tight text-foreground" />
         </Link>
 
         {/* Navigation centrale */}
@@ -71,7 +71,7 @@ export function PublicHeader() {
 
           <Link
             href="/inscription"
-            className="group relative inline-flex h-9 items-center justify-center gap-1.5 rounded-full bg-foreground px-4 text-xs font-semibold text-background transition-all duration-200 hover:-translate-y-px hover:shadow-md active:translate-y-0 sm:px-5 sm:text-sm"
+            className="hover-press shadow-hard group relative inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border-2 border-ink bg-flame px-3.5 text-xs font-semibold text-white sm:h-10 sm:px-4 sm:text-sm"
           >
             <span>{t.landing.createAssistant}</span>
             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -87,13 +87,13 @@ export function PublicFooter() {
   const { t } = useI18n();
 
   return (
-    <footer className="border-t border-border/60 bg-secondary/30 transition-colors">
+    <footer className="border-t-2 border-ink bg-card transition-colors">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-12 sm:px-6">
         <div className="flex flex-col justify-between gap-8 md:flex-row md:items-center">
           <div className="space-y-3">
             <Logo
               markClassName="h-7 w-7 text-brand"
-              wordmarkClassName="font-heading text-xl font-extrabold tracking-tight text-foreground"
+              wordmarkClassName="font-heading text-xl font-bold tracking-tight text-foreground"
             />
             <p className="max-w-md text-sm text-muted-foreground">
               {t.landing.footerRights}
@@ -122,7 +122,7 @@ export function PublicFooter() {
             </Link>
             {CONTACT_WHATSAPP && (
               <a
-                className="inline-flex items-center gap-1.5 rounded-full border border-[#25d366]/40 bg-[#25d366]/10 px-3.5 py-1.5 text-xs font-semibold text-[#128c4a] transition-colors hover:bg-[#25d366]/20 dark:text-[#25d366]"
+                className="inline-flex items-center gap-1.5 rounded-lg border-2 border-[#25d366] px-3.5 py-1.5 text-xs font-semibold text-[#128c4a] transition-colors hover:bg-[#25d366]/20 dark:text-[#25d366]"
                 href={`https://wa.me/${CONTACT_WHATSAPP}`}
                 target="_blank"
                 rel="noopener noreferrer"

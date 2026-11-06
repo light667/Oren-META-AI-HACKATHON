@@ -166,7 +166,7 @@ export function SetupWizard({ slug }: { slug: string }) {
     <div className="space-y-8">
       {/* En-tête */}
       <div className="space-y-2">
-        <div className="inline-flex items-center gap-1.5 rounded-full border border-[#0ebb7c]/30 bg-[#0ebb7c]/10 px-3 py-0.5 text-xs font-semibold text-[#0ebb7c]">
+        <div className="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand/10 px-3 py-0.5 text-xs font-semibold text-brand">
           <Sparkles className="h-3.5 w-3.5" />
           <span>Meta Multimodal AI</span>
         </div>
@@ -185,7 +185,7 @@ export function SetupWizard({ slug }: { slug: string }) {
             key={step}
             className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all ${
               published || i === 0
-                ? "bg-[#0ebb7c] text-white shadow-xs"
+                ? "bg-brand text-white shadow-xs"
                 : "bg-secondary text-muted-foreground"
             }`}
           >
@@ -203,8 +203,8 @@ export function SetupWizard({ slug }: { slug: string }) {
 
       {/* Bannière de succès après publication */}
       {published && (
-        <div className="rounded-3xl border border-[#0ebb7c]/40 bg-[#0ebb7c]/10 p-6 sm:p-8 space-y-4">
-          <div className="flex items-center gap-2 text-[#0ebb7c]">
+        <div className="rounded-3xl border border-brand/40 bg-brand/10 p-6 sm:p-8 space-y-4">
+          <div className="flex items-center gap-2 text-brand">
             <CheckCircle2 className="h-6 w-6" />
             <h2 className="font-heading text-xl font-bold">Félicitations ! Votre restaurant est en ligne.</h2>
           </div>
@@ -213,7 +213,7 @@ export function SetupWizard({ slug }: { slug: string }) {
             <Link
               href={`/${slug}`}
               target="_blank"
-              className="inline-flex h-10 items-center gap-1.5 rounded-xl bg-[#0ebb7c] px-4 text-xs font-bold text-white shadow-md shadow-[#0ebb7c]/20 hover:bg-[#0ca66e]"
+              className="inline-flex h-10 items-center gap-1.5 rounded-xl bg-brand px-4 text-xs font-bold text-white shadow-md shadow-brand/20 hover:bg-brand-strong"
             >
               <ExternalLink className="h-3.5 w-3.5" />
               <span>{t.setup.tryAssistant}</span>
@@ -237,7 +237,7 @@ export function SetupWizard({ slug }: { slug: string }) {
       {/* Étape 1 : Photo du Menu */}
       <div className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8 space-y-5 shadow-xs">
         <div className="flex items-center gap-3 border-b border-border/60 pb-4">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0ebb7c]/10 text-[#0ebb7c]">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
             <Camera className="h-5 w-5" />
           </div>
           <div>
@@ -315,7 +315,7 @@ export function SetupWizard({ slug }: { slug: string }) {
       {/* Étape 2 : Message vocal */}
       <div className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8 space-y-5 shadow-xs">
         <div className="flex items-center gap-3 border-b border-border/60 pb-4">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0ebb7c]/10 text-[#0ebb7c]">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
             <Mic className="h-5 w-5" />
           </div>
           <div>
@@ -352,7 +352,7 @@ export function SetupWizard({ slug }: { slug: string }) {
       {currentQuestion && (
         <div className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8 space-y-5 shadow-xs">
           <div className="flex items-center gap-3 border-b border-border/60 pb-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0ebb7c]/10 text-[#0ebb7c]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
               <HelpCircle className="h-5 w-5" />
             </div>
             <div>
@@ -376,7 +376,7 @@ export function SetupWizard({ slug }: { slug: string }) {
                 type="button"
                 onClick={sendAnswer}
                 disabled={busy !== null}
-                className="h-10 rounded-xl bg-[#0ebb7c] text-xs font-bold text-white hover:bg-[#0ca66e]"
+                className="h-10 rounded-xl bg-brand text-xs font-bold text-white hover:bg-brand-strong"
               >
                 {busy === "interview" ? t.setup.analyzing : t.setup.answerSend}
               </Button>
@@ -388,7 +388,7 @@ export function SetupWizard({ slug }: { slug: string }) {
       {/* Étape 3 : Tableau de révision avant publication */}
       <div className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8 space-y-6 shadow-xs">
         <div className="flex items-center gap-3 border-b border-border/60 pb-4">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0ebb7c]/10 text-[#0ebb7c]">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
             <CheckCircle2 className="h-5 w-5" />
           </div>
           <div>
@@ -453,7 +453,7 @@ export function SetupWizard({ slug }: { slug: string }) {
                           uncertain: digits ? item.uncertain && item.confidence < 0.75 : true,
                         });
                       }}
-                      className="h-9 text-xs font-bold text-[#0ebb7c]"
+                      className="h-9 text-xs font-bold text-brand"
                     />
                   </div>
 
@@ -505,7 +505,7 @@ export function SetupWizard({ slug }: { slug: string }) {
             type="button"
             onClick={publish}
             disabled={busy !== null || published || draft.items.length === 0}
-            className="h-12 w-full sm:w-auto rounded-xl bg-[#0ebb7c] px-8 text-sm font-bold text-white shadow-lg shadow-[#0ebb7c]/20 hover:bg-[#0ca66e] active:scale-95 transition-all"
+            className="h-12 w-full sm:w-auto rounded-xl bg-brand px-8 text-sm font-bold text-white shadow-lg shadow-brand/20 hover:bg-brand-strong active:scale-95 transition-all"
           >
             {busy === "publish" ? t.setup.analyzing : t.setup.publish}
           </Button>

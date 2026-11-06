@@ -40,7 +40,7 @@ export function ConversationInbox({ items }: { items: InboxItem[] }) {
             onClick={() => setFilter("all")}
             className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
               filter === "all"
-                ? "bg-[#0ebb7c] text-white shadow-xs"
+                ? "bg-brand text-white shadow-xs"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -51,7 +51,7 @@ export function ConversationInbox({ items }: { items: InboxItem[] }) {
             onClick={() => setFilter("handoff")}
             className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
               filter === "handoff"
-                ? "bg-[#0ebb7c] text-white shadow-xs"
+                ? "bg-brand text-white shadow-xs"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -78,7 +78,7 @@ export function ConversationInbox({ items }: { items: InboxItem[] }) {
                   className={`group flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border bg-card p-4 shadow-xs transition-all duration-200 hover:shadow-md ${
                     isHandoff
                       ? "border-amber-500/60 ring-1 ring-amber-500/20"
-                      : "border-border/70 hover:border-[#0ebb7c]/50"
+                      : "border-border/70 hover:border-brand/50"
                   }`}
                 >
                   <div className="min-w-0 flex-1 space-y-1.5">
@@ -112,7 +112,7 @@ export function ConversationInbox({ items }: { items: InboxItem[] }) {
                   </div>
 
                   <div className="flex items-center gap-2 self-end sm:self-center">
-                    <span className="inline-flex h-8 items-center gap-1 rounded-xl border border-border/80 bg-secondary/50 px-3 text-xs font-semibold text-foreground transition-colors group-hover:bg-[#0ebb7c] group-hover:text-white group-hover:border-[#0ebb7c]">
+                    <span className="inline-flex h-8 items-center gap-1 rounded-xl border border-border/80 bg-secondary/50 px-3 text-xs font-semibold text-foreground transition-colors group-hover:bg-brand group-hover:text-white group-hover:border-brand">
                       <span>{t.conversations.open}</span>
                       <ArrowRight className="h-3.5 w-3.5" />
                     </span>

@@ -83,7 +83,7 @@ export function AssistantSettings({
     <div className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8 space-y-6 shadow-xs">
       <div className="flex items-start justify-between gap-4 border-b border-border/60 pb-5">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0ebb7c]/10 text-[#0ebb7c]">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
             <Bot className="h-5 w-5" />
           </div>
           <div>
@@ -99,11 +99,11 @@ export function AssistantSettings({
         <span
           className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
             enabled
-              ? "bg-[#0ebb7c]/15 text-[#0ebb7c]"
+              ? "bg-brand/15 text-brand"
               : "bg-destructive/15 text-destructive"
           }`}
         >
-          <span className={`h-1.5 w-1.5 rounded-full ${enabled ? "bg-[#0ebb7c] animate-pulse" : "bg-destructive"}`} />
+          <span className={`h-1.5 w-1.5 rounded-full ${enabled ? "bg-brand animate-pulse" : "bg-destructive"}`} />
           <span>{enabled ? "Actif" : "Coupé"}</span>
         </span>
       </div>
@@ -154,7 +154,7 @@ export function AssistantSettings({
               <Button
                 type="submit"
                 disabled={busy}
-                className="h-10 rounded-xl bg-[#0ebb7c] text-xs font-bold text-white hover:bg-[#0ca66e]"
+                className="h-10 rounded-xl bg-brand text-xs font-bold text-white hover:bg-brand-strong"
               >
                 {busy ? t.common.saving : t.common.save}
               </Button>
@@ -162,7 +162,7 @@ export function AssistantSettings({
             <p className="text-[11px] text-muted-foreground">{t.settings.alertDelayHelp}</p>
           </div>
           {saved && (
-            <p className="flex items-center gap-1 text-xs text-[#0ebb7c] font-semibold">
+            <p className="flex items-center gap-1 text-xs text-brand font-semibold">
               <Check className="h-3.5 w-3.5" />
               <span>{t.settings.saved}</span>
             </p>

@@ -38,9 +38,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
           {/* Profil entreprise connecté */}
           <div className="mt-3.5 flex items-center gap-2.5 rounded-2xl border border-border/60 bg-card/60 p-2.5">
-            <div className="relative flex h-8 w-8 items-center justify-center rounded-xl bg-[#0ebb7c]/10 text-[#0ebb7c] font-bold">
+            <div className="relative flex h-8 w-8 items-center justify-center rounded-xl bg-brand/10 text-brand font-bold">
               <span>{ctx.business.name.charAt(0).toUpperCase()}</span>
-              <span className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full border-2 border-background bg-[#0ebb7c]" />
+              <span className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full border-2 border-background bg-brand" />
             </div>
             <div className="min-w-0 flex-1">
               <p className="truncate text-xs font-bold leading-tight text-foreground">{ctx.business.name}</p>
@@ -59,7 +59,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               variant="secondary"
               className={
                 isOwner
-                  ? "bg-[#0ebb7c]/10 text-[#0ebb7c] text-[10px] font-bold"
+                  ? "bg-brand/10 text-brand text-[10px] font-bold"
                   : "bg-secondary text-muted-foreground text-[10px]"
               }
             >
@@ -88,7 +88,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                 variant="secondary"
                 className={
                   isOwner
-                    ? "bg-[#0ebb7c]/10 text-[#0ebb7c] text-[10px] font-bold"
+                    ? "bg-brand/10 text-brand text-[10px] font-bold"
                     : "bg-secondary text-muted-foreground text-[10px]"
                 }
               >
@@ -100,7 +100,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             </div>
           </div>
           <div className="mt-2 flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-[#0ebb7c]" />
+            <span className="h-2 w-2 rounded-full bg-brand" />
             <p className="truncate text-xs font-bold text-foreground">{ctx.business.name}</p>
           </div>
         </header>

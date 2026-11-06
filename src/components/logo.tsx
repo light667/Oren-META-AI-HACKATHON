@@ -2,12 +2,12 @@ import { productName } from "@/i18n/fr";
 
 /**
  * Logo « briques » choisi par le fondateur (Tâche D5 / docs/DESIGN.md).
- * En SVG d'une seule couleur (currentColor), coloré avec le vert
- * de la marque (#0ebb7c).
+ * En SVG d'une seule couleur (currentColor), coloré avec la couleur
+ * de la marque (violet #7c3aed, charte « Énergie »).
  * Une seule source dans tout le projet : ce composant.
  */
 export function LogoMark({
-  className = "h-8 w-8 text-[#0ebb7c]",
+  className = "h-8 w-8 text-brand",
   monochrome = false,
 }: {
   className?: string;
@@ -36,7 +36,7 @@ export function LogoMark({
 /** Logo complet (symbole briques + nom Oren). */
 export function Logo({
   className = "",
-  markClassName = "h-7 w-7 text-[#0ebb7c]",
+  markClassName = "h-7 w-7 text-brand",
   wordmarkClassName = "font-heading text-xl font-extrabold tracking-tight text-foreground",
   showMark = true,
   useOfficialImage = false,

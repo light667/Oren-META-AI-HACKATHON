@@ -307,17 +307,15 @@ export function PublicChat({
             <ArrowLeft className="h-4 w-4" />
           </Link>
 
-          <LogoMark className="h-6 w-6 text-[#0ebb7c]" />
+          <LogoMark className="h-6 w-6 text-brand" />
 
           <span className="truncate font-heading text-sm font-bold text-foreground">
             {businessName}
           </span>
 
           <span
-            className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold ${
-              isOpen
-                ? "bg-primary/10 text-primary border border-primary/20"
-                : "bg-destructive/10 text-destructive border border-destructive/20"
+            className={`inline-flex shrink-0 items-center gap-1 text-[11px] font-semibold ${
+              isOpen ? "text-primary" : "text-destructive"
             }`}
           >
             <span
@@ -683,7 +681,7 @@ export function PublicChat({
 
         <p className="flex items-center justify-center gap-1.5 pt-2 text-[10px] text-muted-foreground">
           <span>{t.app.poweredBy}</span>
-          <LogoMark className="h-3.5 w-3.5 text-[#0ebb7c]" />
+          <LogoMark className="h-3.5 w-3.5 text-brand" />
           <span className="font-bold text-foreground">Oren</span>
         </p>
       </div>
