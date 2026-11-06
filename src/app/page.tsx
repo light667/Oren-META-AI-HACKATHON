@@ -18,6 +18,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { PublicFooter, PublicHeader } from "@/components/public-chrome";
+import { Reveal } from "@/components/reveal";
 import { useI18n } from "@/i18n/context";
 import { cn } from "@/lib/utils";
 
@@ -258,14 +259,14 @@ export default function Home() {
 
         {/* Fonctionnalités : cartes franches, ombre signature */}
         <section className="mx-auto max-w-6xl space-y-14 px-4 py-24 sm:px-6">
-          <SectionHeading eyebrow={L.featuresEyebrow} title={L.featuresTitle} sub={L.featuresSub} />
+          <Reveal><SectionHeading eyebrow={L.featuresEyebrow} title={L.featuresTitle} sub={L.featuresSub} /></Reveal>
           <div className="grid gap-6 md:grid-cols-2">
             {L.features.map((feature, index) => {
               const Icon = FEATURE_ICONS[index] ?? Sparkles;
               const accent = index === 1;
               return (
+                <Reveal key={feature.title} delay={index * 90} className="h-full">
                 <article
-                  key={feature.title}
                   className={cn(
                     "hover-press shadow-hard rounded-xl border-2 border-ink p-7",
                     accent ? "bg-brand text-brand-foreground" : "bg-card",
@@ -289,6 +290,7 @@ export default function Home() {
                     {feature.body}
                   </p>
                 </article>
+                </Reveal>
               );
             })}
           </div>
@@ -297,14 +299,16 @@ export default function Home() {
         {/* Comment ça marche : aplat orange */}
         <section id="comment-ca-marche" className="scroll-mt-20 border-y-2 border-ink bg-flame py-24 text-white">
           <div className="mx-auto max-w-6xl space-y-14 px-4 sm:px-6">
-            <SectionHeading eyebrow={L.stepsEyebrow} title={L.howTitle} sub={L.howSub} light />
+            <Reveal><SectionHeading eyebrow={L.stepsEyebrow} title={L.howTitle} sub={L.howSub} light /></Reveal>
             <ol className="grid gap-6 md:grid-cols-3">
               {L.steps.map((step, index) => {
                 const Icon = STEP_ICONS[index] ?? Sparkles;
                 return (
-                  <li
+                  <Reveal
+                    as="li"
                     key={step.title}
-                    className="shadow-hard rounded-xl border-2 border-ink bg-card p-7 text-card-foreground"
+                    delay={index * 120}
+                    className="shadow-hard h-full rounded-xl border-2 border-ink bg-card p-7 text-card-foreground"
                   >
                     <div className="flex items-center justify-between">
                       <span className="font-heading text-5xl font-bold leading-none text-brand">
@@ -314,7 +318,7 @@ export default function Home() {
                     </div>
                     <h3 className="mt-6 text-lg font-bold tracking-tight">{step.title}</h3>
                     <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{step.body}</p>
-                  </li>
+                  </Reveal>
                 );
               })}
             </ol>
@@ -323,16 +327,18 @@ export default function Home() {
 
         {/* Confiance */}
         <section className="mx-auto max-w-6xl space-y-14 px-4 py-24 sm:px-6">
-          <SectionHeading eyebrow={L.trustEyebrow} title={L.trustTitle} />
+          <Reveal><SectionHeading eyebrow={L.trustEyebrow} title={L.trustTitle} /></Reveal>
           <div className="grid gap-6 md:grid-cols-3">
             {L.trustItems.map((item, index) => {
               const Icon = TRUST_ICONS[index] ?? ShieldCheck;
               return (
-                <div key={item.title} className="rounded-xl border-2 border-border bg-card p-7">
+                <Reveal key={item.title} delay={index * 90} className="h-full">
+                <div className="h-full rounded-xl border-2 border-border bg-card p-7">
                   <Icon className="h-7 w-7 text-brand" />
                   <h3 className="mt-5 text-lg font-bold tracking-tight">{item.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
                 </div>
+                </Reveal>
               );
             })}
           </div>
@@ -341,15 +347,15 @@ export default function Home() {
         {/* Pour qui */}
         <section id="pour-qui" className="scroll-mt-20 bg-brand-soft py-24 dark:bg-secondary">
           <div className="mx-auto max-w-6xl space-y-12 px-4 sm:px-6">
-            <SectionHeading eyebrow={L.audienceLink} title={L.audienceTitle} sub={L.audienceSub} />
+            <Reveal><SectionHeading eyebrow={L.audienceLink} title={L.audienceTitle} sub={L.audienceSub} /></Reveal>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-              {L.audience.map((entry) => {
+              {L.audience.map((entry, index) => {
                 const available = entry.status === L.availableNow;
                 return (
+                  <Reveal key={entry.name} delay={index * 80} className="h-full">
                   <div
-                    key={entry.name}
                     className={cn(
-                      "rounded-xl border-2 p-6",
+                      "h-full rounded-xl border-2 p-6",
                       available
                         ? "shadow-hard border-ink bg-brand text-brand-foreground"
                         : "border-dashed border-brand/40 bg-card/60",
@@ -365,6 +371,7 @@ export default function Home() {
                       {entry.status}
                     </p>
                   </div>
+                  </Reveal>
                 );
               })}
             </div>
@@ -373,7 +380,7 @@ export default function Home() {
 
         {/* Questions fréquentes */}
         <section id="questions" className="mx-auto max-w-3xl scroll-mt-20 space-y-12 px-4 py-24 sm:px-6">
-          <SectionHeading eyebrow={L.faqEyebrow} title={L.faqTitle} sub={L.faqSub} />
+          <Reveal><SectionHeading eyebrow={L.faqEyebrow} title={L.faqTitle} sub={L.faqSub} /></Reveal>
           <div className="space-y-3">
             {L.faq.map((entry) => (
               <details
