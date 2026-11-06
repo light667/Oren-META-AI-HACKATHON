@@ -1,4 +1,5 @@
 import type { User } from "@supabase/supabase-js";
+import { connection } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 export interface StaffContext {
@@ -17,6 +18,9 @@ export interface StaffContext {
 
 /** Utilisateur connecté (session Supabase), ou null. */
 export async function getCurrentUser(): Promise<User | null> {
+  // Session propre à chaque requête : jamais pré-rendue (Supabase lit
+  // l'horloge pour valider le jeton, interdit pendant le pré-rendu).
+  await connection();
   const supabase = await createClient();
   const {
     data: { user },
@@ -30,6 +34,7 @@ export async function getCurrentUser(): Promise<User | null> {
  * laisse rien passer, le contexte est null, comme il se doit.
  */
 export async function getStaffContext(): Promise<StaffContext | null> {
+  await connection();
   const supabase = await createClient();
   const {
     data: { user },
